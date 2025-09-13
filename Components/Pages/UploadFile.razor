@@ -22,7 +22,6 @@
     private bool isLoading;
     private void HandleFileSelected(InputFileChangeEventArgs e){
         isLoading = true;
-        Console.WriteLine("Test one");
         chatlog = e.File;
         Console.WriteLine("Selected File: " + chatlog.Name);
     }
