@@ -3,12 +3,20 @@ using System.Text.RegularExpressions;
 public struct LoveResults
 {
     public double love_percentage;
+    public int extraYCount;
+    public int heartCount;
+    public int emojiCount;
+    public int otherMessageCount;
+    public int userMessageCount;
+    public double averageResponseTime;
+    public int powerWordCount;
 }
 public struct Message
 {
     public DateTime Time;
     public string Content;
     public bool Self;
+    public 
 
     public Message(DateTime time, string content, bool self)
     {
