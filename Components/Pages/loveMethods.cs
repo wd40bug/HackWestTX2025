@@ -42,11 +42,54 @@ public class ChatLog(List<Message> messageLog)
             responseIndex++;
             if (responseIndex > MessageLog.Count)
             {
+                // End iteration and return impossible value if last message is from user (no response from other person)
                 responseTime = new TimeSpan(-1, -1, -1);
                 return responseTime;
             }
         }
-        responseTime = MessageLog(messageIndex).Subtra
-        
+        responseTime = MessageLog[responseIndex].Time.Subtract(MessageLog[messageIndex].Time);
+        return responseTime;
+    }
+
+    public List<TimeSpan> MakeResponseTimeList()
+    {
+        List<TimeSpan> responseTimeList = new List<TimeSpan>();
+        bool moreMessages = true;
+        int messageIndex = 0;
+        while (moreMessages && messageIndex < MessageLog.Count)
+        {
+            Message currentMessage = MessageLog[messageIndex];
+            //Only count when user initiates convo
+            if (!currentMessage.Self)
+            {
+                messageIndex++;
+                continue;
+            }
+            // check if last message in log
+            if (TimeBetweenResponse(messageIndex).Ticks < 0)
+            {
+                moreMessages = false;
+                break;
+            }
+            responseTimeList.Add(TimeBetweenResponse(messageIndex));
+            //Wait for next instance of conversation initiation
+            while (MessageLog[messageIndex].Self && messageIndex < MessageLog.Count)
+            {
+                messageIndex++;
+            }
+        }
+        return responseTimeList;
+    }
+
+    public double FindAverageResponseTime()
+    {
+        double sum = 0;
+        List<TimeSpan> responseTimeList = MakeResponseTimeList();
+        for (int i = 0; i < responseTimeList.Count; i++)
+        {
+            sum += responseTimeList[i].TotalSeconds;
+        }
+        double averageResponseTime = sum / responseTimeList.Count;
+        return averageResponseTime;
     }
 }
