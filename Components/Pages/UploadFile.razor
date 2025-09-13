@@ -1,29 +1,143 @@
-@page "/uploadFile"
-@inject ILogger<UploadFile> Logger
+@* @using System.Runtime.CompilerServices *@
+@* @inject ILogger<UploadFile> Logger *@
 @rendermode InteractiveServer
 
-<PageTitle>Upload File</PageTitle>
+<div class="container">
+    <h1>Upload File</h1>
 
-<h1>Upload File</h1>
+    <div class="inner-container">
+        <InputFile OnChange="HandleFileSelected" />
+        <div class="token">
+            <p>Discord Token:</p>
+            <InputNumber class="discord_token" @bind-Value="@token" />
+        </div>
+    </div>
+    <div class="button-holder">
+        <button class="titan-one love-button" disabled="@button_disabled" @onclick="CalculateLove">CALCULATE
+            LOVE</button>
+    </div>
 
-@*<button class="btn btn-primary" @onclick="UploadFiles">Upload the char log</button>*@
 
-<p>
-    <InputFile OnChange="HandleFileSelected"/>
-</p>
+</div>
 
-@if (isLoading)
-{
-    <p>Uploading...</p>
-}
 
 
 @code {
-    private IBrowserFile chatlog;
-    private bool isLoading;
-    private void HandleFileSelected(InputFileChangeEventArgs e){
-        isLoading = true;
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnLove { get; set; }
+    private bool button_disabled = true;
+
+    private string? discord_token;
+    private Int64? _token_get;
+    private Int64? token
+    {
+        get
+        {
+            return _token_get;
+        }
+        set
+        {
+            _token_get = value;
+            discord_token = value.ToString();
+            IsReadyForLove();
+        }
+    }
+    private IBrowserFile? chatlog;
+
+    private void IsReadyForLove()
+    {
+        if (chatlog is not null && token is not null)
+        {
+            button_disabled = false;
+        }
+    }
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
         chatlog = e.File;
-        Console.WriteLine("Selected File: " + chatlog.Name);
+        IsReadyForLove();
+    }
+
+    private void CalculateLove()
+    {
+        Console.WriteLine("File name: " + chatlog?.Name);
+        Console.WriteLine("Discord token: " + discord_token);
+        OnLove.InvokeAsync();
     }
 }
+
+<style>
+    .container {
+        background-color:
+            @BlazorTest.ColorConstants.purple
+        ;
+        border-radius: 20px;
+        padding: 10px;
+        height: 100%;
+        position: relative;
+    }
+
+    .inner-container {
+        background-color:
+            @BlazorTest.ColorConstants.light_purple
+        ;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 10px;
+        border-radius: 10px;
+        height: 100px;
+        align-items: center;
+    }
+
+    .button-holder {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .love-button {
+        width: 50%;
+        height: 50px;
+        background-color:
+            @BlazorTest.ColorConstants.light_purple
+        ;
+        border: 0px;
+        border-radius: 10px;
+    }
+
+    .love-button:enabled {
+        color:
+            @BlazorTest.ColorConstants.rose
+        ;
+    }
+
+    .love-button:enabled:hover {
+        background-color:
+            @BlazorTest.ColorConstants.mimi
+        ;
+    }
+
+    body {
+        height: 100%;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .discord_token {
+        background-color:
+            @BlazorTest.ColorConstants.mimi
+        ;
+        border: 0px;
+        border-radius: 5px;
+        width: 100%;
+    }
+</style>
