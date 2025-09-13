@@ -1,5 +1,9 @@
 using System.Text.RegularExpressions;
 
+public struct LoveResults
+{
+    public double love_percentage;
+}
 public struct Message
 {
     public DateTime Time;
