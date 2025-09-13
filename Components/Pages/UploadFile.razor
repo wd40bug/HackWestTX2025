@@ -1,0 +1,29 @@
+@page "/uploadFile"
+@inject ILogger<UploadFile> Logger
+@rendermode InteractiveServer
+
+<PageTitle>Upload File</PageTitle>
+
+<h1>Upload File</h1>
+
+@*<button class="btn btn-primary" @onclick="UploadFiles">Upload the char log</button>*@
+
+<p>
+    <InputFile OnChange="HandleFileSelected"/>
+</p>
+
+@if (isLoading)
+{
+    <p>Uploading...</p>
+}
+
+@code {
+    private IBrowserFile chatlog;
+    private bool isLoading;
+    private void HandleFileSelected(InputFileChangeEventArgs e){
+        isLoading = true;
+        Console.WriteLine("Test one");
+        chatlog = e.File;
+        Console.WriteLine("Selected File: " + chatlog.Name);
+    }
+}
