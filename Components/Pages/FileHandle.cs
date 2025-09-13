@@ -6,23 +6,17 @@ using System.Security.Cryptography.X509Certificates;
 
 class FileHandle()
 {
+    
     static void Main(string[] args)
     {
+        int userId;
+        string fileName;
+        string jsonString = File.ReadAllText(fileName);
+        DMData myData = JsonSerializer.Deserialize<DMData>(jsonString);
 
-
-    public int userId;
-    string fileName;
-    string jsonString = File.ReadAllText(fileName);
-    DMData myData = JsonSerializer.Deserialize<DMData>(jsonString);
-
-    //List<Message> messages = myData.select;}
-
-
-
-
-
-
+        //List<Message> messages = myData.select;}
     }
+    
 }
 
 public class DMData {
