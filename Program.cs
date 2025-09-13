@@ -25,14 +25,16 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 Console.WriteLine("test");
-DateTime message1 = new DateTime(100000);
-DateTime message2 = new DateTime(234235345);
-Message aMessage = new Message(message1, "Hello", true);
-Message anotherMessage = new Message(message2, "Hello,", false);
-List<Message> log = new List<Message>() { aMessage, anotherMessage };
+DateTime message1_self = new DateTime(100000000);
+DateTime message2_other = new DateTime(200000000);
+DateTime message3_self = new DateTime(300000000);
+Message aMessage1 = new Message(message1_self, "Hello", true);
+Message aMessage2 = new Message(message2_other, "<3 Hello, 😉😉😉😉heyyyyyyyy <3 <3 <3", false);
+Message aMessage3 = new Message(message3_self, "Hello again", true);
+List<Message> log = new List<Message>() { aMessage1, aMessage2, aMessage3 };
 
 ChatLog aLog = new ChatLog(log);
-Console.WriteLine(aLog.TimeBetweenResponse(0));
+Console.WriteLine(aLog.TimeBetweenResponse(2));
 
 Console.WriteLine(aLog.FindAverageResponseTime());
 
