@@ -1,7 +1,54 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>LOVE-ME-NOT</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1 class="titan-one title">LOVE-ME-NOT</h1>
 
-Welcome to your new app.
+@switch (state)
+{
+    case Page.UploadFile:
+        <UploadFile OnLove="@LoveCalculated" />
+        ; break;
+    case Page.Loading:
+        <p>TODO: Loading</p>
+        ; break;
+    case Page.Results:
+        <p>TODO: Results</p>
+        ; break;
+}
+
+
+@code {
+    enum Page
+    {
+        UploadFile,
+        Loading,
+        Results,
+    }
+    Page state = Page.UploadFile;
+
+    public void LoveCalculated()
+    {
+        Console.WriteLine("Love calculated");
+        state = Page.Loading;
+        Console.WriteLine(state);
+    }
+}
+
+<style>
+    .title {
+        font-size: 100pt;
+        color:
+            @BlazorTest.ColorConstants.rose
+        ;
+    }
+
+    body {
+        background-color:
+            @BlazorTest.ColorConstants.mint
+        ;
+        display: flex;
+        justify-content: center;
+    }
+</style>
