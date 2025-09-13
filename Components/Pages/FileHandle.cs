@@ -4,17 +4,19 @@ using System;
 using System.Security.Cryptography.X509Certificates;
 //using Message;
 
-class FileHandle()
+public class FileHandle()
 {
-    
+
     static void Main(string[] args)
     {
-        int userId;
-        string fileName;
+        string fileName = "DuckWithThumbs.json";
         string jsonString = File.ReadAllText(fileName);
         DMData myData = JsonSerializer.Deserialize<DMData>(jsonString);
 
-        //List<Message> messages = myData.select;}
+        //Console.WriteLine("Content: " + myData.message.content);
+        //List<Message> messages = myData.selectr}
+        
+        
     }
     
 }
@@ -24,6 +26,7 @@ public class DMData {
 }
 public class RawMessage
 {
+    public long id{ get; set; }
     public Author author { get; set; }
     public string content { get; set; }
     public DateTime timestamp{ get; set; }
