@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Runtime.InteropServices
 @rendermode InteractiveServer
 
 <PageTitle>LOVE-ME-NOT</PageTitle>
@@ -11,10 +12,10 @@
         <UploadFile OnLove="@LoveCalculated" />
         ; break;
     case Page.Loading:
-        <p>TODO: Loading</p>
+        <Loading />
         ; break;
     case Page.Results:
-        <p>TODO: Results</p>
+        <Results />
         ; break;
 }
 
@@ -27,12 +28,25 @@
         Results,
     }
     Page state = Page.UploadFile;
+    private List<Message> parse_json = new List<Message>();
 
-    public void LoveCalculated()
+    public async void LoveCalculated((IBrowserFile file, string token) args)
     {
         Console.WriteLine("Love calculated");
         state = Page.Loading;
-        Console.WriteLine(state);
+        await InvokeAsync(StateHasChanged);
+        parse_json = await FileHandle.ParseJson(args.file, args.token);
+        Console.WriteLine("Number of messages: " + parse_json.Count());
+        foreach (var message in parse_json)
+        {
+            Console.Write(message.Time + ": ");
+            Console.WriteLine(message.Content);
+        }
+        ChatLog clog = new ChatLog(parse_json);
+        clog.FindAverageResponseTime();
+        state = Page.Results;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("Finished Calculating Love!!!");
     }
 }
 
