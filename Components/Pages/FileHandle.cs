@@ -22,44 +22,29 @@ namespace BlazorTest.Components.Pages {
             myData = JsonSerializer.Deserialize<DMData>(jsonString);
 
             List<Message> msgs = new List<Message>(new Message[myData.messageCount]);
-            
+
             for (int i = 0; i < myData.messageCount; i++)
             {
-                //msgs[i] = new Message();
+                Message temp = new Message();
 
-                msgs[i].Content = myData.message.content;
+                temp.Content = myData.message.content;
+                temp.Time = myData.message.timestamp;
 
                 if (myData.message.author.id == authorId)
                 {
-                    //return true;
+                    temp.Self = true;
                 }
                 else
-                { //return false; 
+                {
+                    temp.Self = false;
                 }
+
+                msgs[i] = temp;
             }
             
-           /* List<Message> msgs = myData.Select(d => new Message
-            {
-                
-            }).ToList();*/
-            
-
-            
-
-
-            //string jsonString = File.ReadAllText(fileName);
-
-            //Console.WriteLine("Content: " + myData.message.content);
-            //List<Message> messages = myData.selectr}
-
-
-
         }
         
-          /*  if(myData.message.author.id == authorId){
-                return true;
-            }
-            else { return false; }*/
+         
         
     
 }
