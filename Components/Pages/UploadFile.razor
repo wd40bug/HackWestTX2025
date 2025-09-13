@@ -25,7 +25,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public EventCallback OnLove { get; set; }
+    public EventCallback<(IBrowserFile, string)> OnLove { get; set; }
     private bool button_disabled = true;
 
     private string? discord_token;
@@ -62,7 +62,11 @@
     {
         Console.WriteLine("File name: " + chatlog?.Name);
         Console.WriteLine("Discord token: " + discord_token);
-        OnLove.InvokeAsync();
+        if (chatlog is null || discord_token is null)
+        {
+            return;
+        }
+        OnLove.InvokeAsync((chatlog, discord_token));
     }
 }
 
