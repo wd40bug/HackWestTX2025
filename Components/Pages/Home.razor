@@ -59,7 +59,7 @@
         }
         Console.WriteLine("Number of messages: " + parse_json.Count());
         ChatLog clog = new ChatLog(parse_json);
-        results = clog.FindAverageResponseTime();
+        clog.FindStats();
         state = Page.Results;
         await InvokeAsync(StateHasChanged);
         Console.WriteLine("Finished Calculating Love!!!");
