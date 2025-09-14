@@ -43,6 +43,11 @@
                         break;
                     case ResultKind.powerAbbrev:
                         <PowerAbbrev powerAbbrevCount="results.PowerAbbrevCount.Value"/>
+                    case ResultKind.emojiCount:
+                        <EmojiCount emojiCount="results.EmojiCount.Value" mostSent="@results.mostSent"/>
+                        break;
+                    case ResultKind.winkyCount:
+                        <WinkyCount winkyCount="results.WinkyCount.Value" />
                         break;
                 }
             </div>
@@ -244,6 +249,9 @@
     enum ResultKind
     {
         responseTime,
+        emojiCount,
+        winkyCount,
+        mostSent,
         heartCount,
         extraY,
         periodEnd,
@@ -272,6 +280,8 @@
         ret.Add((results.PowerWordCount.Weight, ResultKind.powerWords));
         ret.Add((results.PowerPhraseCount.Weight, ResultKind.powerPhrase));
         ret.Add((results.PowerAbbrevCount.Weight, ResultKind.powerAbbrev));
+        ret.Add((results.EmojiCount.Weight, ResultKind.emojiCount));
+        ret.Add((results.WinkyCount.Weight, ResultKind.winkyCount));
         return ret.OrderByDescending(i => Math.Abs(i.Item1)).Select(i => i.Item2).ToList();
     }
 

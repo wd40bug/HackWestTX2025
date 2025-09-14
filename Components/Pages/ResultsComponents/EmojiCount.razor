@@ -1,0 +1,29 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int emojiCount { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public string mostSent{ get; set; }
+}
+
+<div class="emoji-count-container">
+    <h1 class="emoji-count-text">@mostSent</h1>
+    <h2 class="text">They sent you @emojiCount emojis, and this was their most common emoji</h2>
+</div>
+
+<style>
+    .emoji-count-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+        height: 100%;
+    }
+
+    .emoji-count-text {
+        font-size: 50pt;
+        font-family: 'Arial', bold;
+    }
+</style>
