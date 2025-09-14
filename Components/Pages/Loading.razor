@@ -94,7 +94,7 @@
     {
         if (first_render)
         {
-            _context = await helper_canvas!.GetContext2DAsync();
+
             _timer = new Timer(10); // 1 second interval
             _timer.Elapsed += HandleTimerElapsed;
             _timer.AutoReset = true;
@@ -104,6 +104,12 @@
             _timer2.Elapsed += HandleProgressTimerElapsed;
             _timer2.AutoReset = true;
             _timer2.Enabled = true;
+
+            if (helper_canvas is not null)
+            {
+                _context = await helper_canvas.GetContext2DAsync();
+            }
+
         }
     }
 }
