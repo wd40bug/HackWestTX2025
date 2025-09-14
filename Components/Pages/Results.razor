@@ -3,7 +3,9 @@
 
 <div class="flower-spacer"></div>
 <div class="result-container">
-    <div class="flower-indicator"></div>
+    <div class="flower-indicator">
+        <img class="flower-image" src="@flower_name()" />
+    </div>
     <div class="result-top">
         <div class="love-percentage">
             <h1 class="titan-one">@Math.Round(results.Love_percentage)%</h1>
@@ -33,6 +35,12 @@
 
 
 <style>
+    .flower-image {
+        transform:
+            @translation()
+            scale(1.4);
+    }
+
     .result-container {
         position: relative;
         background-color:
@@ -148,6 +156,30 @@
 
 
 @code {
+    private string flower_name()
+    {
+        @* return "../flowers/wilting_flower" + results.Meaning.flower + ".png"; *@
+        return "../flowers/wilting_flower" + results.Meaning.flower + ".png";
+    }
+
+    private string translation()
+    {
+        switch (results.Meaning.flower)
+        {
+            case 1:
+                return "translate(-20px, -100px)";
+            case 2:
+                return "translate(-30px, -100px)";
+            case 3:
+                return "translate(-10px, -100px)";
+            case 4:
+                return "translate(0px, -100px)";
+            case 5:
+                return "translate(-15px, -150px)";
+            default: return "";
+        }
+    }
+
     enum ResultKind
     {
         responseTime,

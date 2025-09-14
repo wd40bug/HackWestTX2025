@@ -5,43 +5,44 @@ public struct LovePercentageMeaning
 {
     public string message;
     public string color;
+    public int flower;
     public LovePercentageMeaning(double percentage)
     {
         if (percentage >= 95)
         {
-            color = "#f702ef"; message = "Marry Me!"; return;
+            color = "#f702ef"; message = "Marry Me!"; flower = 1; return;
         }
         else if (percentage >= 90)
         {
-            color = "#02f738"; message = "Are you free this friday?"; return;
+            color = "#02f738"; message = "Are you free this friday?"; flower = 1; return;
         }
         else if (percentage >= 80)
         {
-            color = "#94e32d"; message = "Maybe this could be something"; return;
+            color = "#94e32d"; message = "I think there's something here!"; flower = 1; return;
         }
         else if (percentage >= 70)
         {
-            color = "#bae643"; message = "I think of you as a really good friend"; return;
+            color = "#bae643"; message = "Maybe this could be something"; flower = 2; return;
         }
         else if (percentage >= 60)
         {
-            color = "#d2e643"; message = "I don't think romance is in the cards"; return;
+            color = "#d2e643"; message = "I think of you as a really good friend"; flower = 2; return;
         }
         else if (percentage >= 50)
         {
-            color = "#e6ca43"; message = "You're a pleasant aquaintance"; return;
+            color = "#e6ca43"; message = "You're a pleasant aquaintance"; flower = 3; return;
         }
         else if (percentage >= 30)
         {
-            color = "#e6a743"; message = "Why do we even talk?"; return;
+            color = "#e6a743"; message = "Why do we even talk?"; flower = 4; return;
         }
         else if (percentage >= 10)
         {
-            color = "#e67643"; message = "Who is this?"; return;
+            color = "#e67643"; message = "Who is this?"; flower = 5; return;
         }
         else
         {
-            color = "red"; message = "I HATE YOU!"; return;
+            color = "red"; message = "I HATE YOU!"; flower = 5; return;
         }
     }
 }
