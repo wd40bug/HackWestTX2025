@@ -496,7 +496,7 @@ public class ChatLog(List<Message> messageLog)
             if (!currentMessage.Self)
             {
                 otherMessageCount++;
-                if (currentMessage.Content.ToLower().Contains("hey")) heyCount++;
+                if (currentMessage.Content.ToLower().Contains("heyy")) heyCount++;
                 extraYCount += FindYCount(currentMessage.Content);
                 heartCount += FindHeartCount(currentMessage.Content);
                 winkyCount += FindWinkyCount(currentMessage.Content);

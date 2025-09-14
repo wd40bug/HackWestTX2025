@@ -97,18 +97,42 @@ else
     public EventCallback<(IBrowserFile, string)> OnLove { get; set; }
     private bool button_disabled = true;
 
-    private string? discord_token;
-    private Int64? _token_get;
+    [Parameter]
+    public string discord_token { get; set; } = "";
     private Int64? token
     {
         get
         {
-            return _token_get;
+            Int64? value = 0;
+            try
+            {
+                value = Int64.Parse(discord_token);
+            }
+            catch (FormatException)
+            {
+                value = null;
+            }
+            return value;
         }
         set
         {
-            _token_get = value;
-            discord_token = value.ToString();
+            if (value is null)
+            {
+                discord_token = "";
+            }
+            else
+            {
+                string? parsed = value.ToString();
+                if (parsed is not null)
+                {
+                    discord_token = parsed;
+                }
+                else
+                {
+                    discord_token = "";
+                }
+            }
+
             IsReadyForLove();
         }
     }

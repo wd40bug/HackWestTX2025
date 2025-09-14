@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using System.Runtime.InteropServices
+@using System.Security.Principal
 @rendermode InteractiveServer
 
 <PageTitle>LOVE-ME-NOT</PageTitle>
@@ -8,7 +9,7 @@
 @switch (state)
 {
     case Page.UploadFile:
-        <UploadFile OnLove="@LoveCalculated" />
+        <UploadFile OnLove="@LoveCalculated" discord_token="@discord_token" />
         ; break;
     case Page.Loading:
         <Loading Progress="@progress" Reciprocal="@reciprocal" />
@@ -16,7 +17,7 @@
     case Page.Results:
         @if (results is not null)
         {
-            <Results results="@results" Reciprocal="@ReciprocalCallback" Home="@HomeCallBack"/>
+            <Results results="@results" Reciprocal="@ReciprocalCallback" Home="@HomeCallBack" />
         }
         else
         {
@@ -28,6 +29,7 @@
 
 
 @code {
+    private string discord_token = "";
     private bool reciprocal = false;
     private double progress;
     public async Task update_progress(double new_progress)
@@ -58,6 +60,7 @@
     }
     public async void LoveCalculated((IBrowserFile file, string token) args)
     {
+        discord_token = args.token;
         reciprocal = false;
         Console.WriteLine("Love calculated");
         state = Page.Loading;
@@ -76,7 +79,8 @@
         await calculate_love();
     }
 
-    public async void HomeCallBack(){
+    public async void HomeCallBack()
+    {
         progress = 0;
         state = Page.UploadFile;
         await InvokeAsync(StateHasChanged);
