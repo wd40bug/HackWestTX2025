@@ -19,7 +19,16 @@ namespace BlazorTest.Components.Pages
             using var reader = new StreamReader(stream);
 
             var jsonString = await reader.ReadToEndAsync();
-            DMData? myData = JsonSerializer.Deserialize<DMData>(jsonString);
+            DMData? myData;
+            try
+            {
+                myData = JsonSerializer.Deserialize<DMData>(jsonString);
+            }
+            catch (JsonException)
+            {
+                return [];
+            }
+
             if (myData is null)
             {
                 return [];

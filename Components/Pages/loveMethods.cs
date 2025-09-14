@@ -419,8 +419,12 @@ public class ChatLog(List<Message> messageLog)
     }
 
     // Count up all the FindStats
-    public async Task<LoveResults> FindStats(Func<double, Task> progress_callback)
+    public async Task<LoveResults?> FindStats(Func<double, Task> progress_callback)
     {
+        if (MessageLog.Count == 0)
+        {
+            return null;
+        }
         await progress_callback(.1);
         int extraYCount = 0;
         int heartCount = 0;
