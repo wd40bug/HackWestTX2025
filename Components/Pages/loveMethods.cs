@@ -247,11 +247,11 @@ public class ChatLog(List<Message> messageLog)
     {
         string lowMessage = message.ToLower();
         int powerAbbrevCount = 0;
-        List<string> powerAbbrevList = new List<String>() { "ily", "gm", "gn" };
+        List<string> powerAbbrevList = new List<String>() { "ily", "gm", "gn\b" };
 
         foreach (string powerWord in powerAbbrevList)
         {
-            powerAbbrevCount += Regex.Matches(lowMessage, powerWord).Count;
+            powerAbbrevCount += Regex.Matches(lowMessage, @"\b" + powerWord + @"\b").Count;
         }
         return powerAbbrevCount;
     }
