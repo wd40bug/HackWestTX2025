@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 public struct LoveResults
@@ -131,6 +132,16 @@ public class ChatLog(List<Message> messageLog)
             return 1;
         }
         return 0;
+    }
+
+    private double CalculateLovePercent(LoveResults results)
+    {
+        /*
+        Weights (high to low)
+        Average Response time
+        Messages per day
+        */
+
     }
 
     // Count up all the FindStats
