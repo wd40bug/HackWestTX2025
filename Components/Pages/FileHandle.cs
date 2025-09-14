@@ -35,6 +35,7 @@ namespace BlazorTest.Components.Pages
                     Time = message.timestamp,
                     Self = message.author.id == token,
                     Content = message.content,
+                    Emojis = [.. message.inlineEmojis.Select(i => i.name)]
                 };
                 msgs.Add(msg);
             }
@@ -53,6 +54,12 @@ namespace BlazorTest.Components.Pages
         required public Author author { get; set; }
         required public string content { get; set; }
         required public DateTime timestamp { get; set; }
+        required public List<InlineEmojis> inlineEmojis { get; set; }
+    }
+
+    public class InlineEmojis
+    {
+        required public string name { get; set; }
     }
 
     public class Author

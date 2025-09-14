@@ -16,13 +16,14 @@ public struct Message
     public DateTime Time;
     public string Content;
     public bool Self;
-    public 
+    public List<string> Emojis;
 
-    public Message(DateTime time, string content, bool self)
+    public Message(DateTime time, string content, bool self, List<string> emojis)
     {
         Time = time;
         Content = content;
         Self = self;
+        Emojis = emojis;
     }
 }
 
@@ -77,10 +78,13 @@ public class ChatLog(List<Message> messageLog)
         return heartCount;
     }
 
-    private int FindEmojiCount(string message)
+    private int FindEmojiCount(Message message)
     {
-        string emojiPattern = "(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])";
-        int emojiCount = Regex.Count(message, emojiPattern);
+        int emojiCount = 0;
+        foreach (var emoji in message.Emojis)
+        {
+            emojiCount++;
+        }
         return emojiCount;
     }
 
@@ -171,7 +175,7 @@ public class ChatLog(List<Message> messageLog)
                 otherMessageCount++;
                 extraYCount += FindYCount(currentMessage.Content);
                 heartCount += FindHeartCount(currentMessage.Content);
-                emojiCount += FindEmojiCount(currentMessage.Content);
+                emojiCount += FindEmojiCount(currentMessage);
                 powerWordCount += FindPowerWordCount(currentMessage.Content);
             }
             if (currentMessage.Self)
