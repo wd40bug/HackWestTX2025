@@ -1,0 +1,25 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int winkyCount { get; set; }
+}
+
+<div class="winky-count-container">
+    <h1 class="winky-count-text">;)</h1>
+    <h2 class="text">They sent @winkyCount winky faces</h2>
+</div>
+
+<style>
+    .winky-count-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+        height: 100%;
+    }
+
+    .winky-count-text {
+        font-size: 50pt;
+        font-family: 'Arial', bold;
+    }
+</style>
