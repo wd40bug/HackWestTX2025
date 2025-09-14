@@ -181,12 +181,14 @@ public class ChatLog(List<Message> messageLog)
             }
         }
         responseTime = MessageLog[responseIndex].Time.Subtract(MessageLog[messageIndex].Time);
+        
         TimeSpan days = new TimeSpan(3, 0, 0, 0);
         if (responseTime.CompareTo(days) > 0)
         {
-            responseTime = days;
-        }
-        return responseTime;
+            return days;
+            
+        }else{return responseTime;}
+        
     }
 
     //find first and last day of messages by checking if the message is earlier/later than earliest/latest date
