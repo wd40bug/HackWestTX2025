@@ -18,6 +18,10 @@
             StateHasChanged();
         }
     }
+
+    [Parameter]
+    [EditorRequired]
+    public bool Reciprocal { get; set; }
     private double size = 700;
     private double num_petals = 24;
     private double petal_inner_rad = 210;
@@ -30,7 +34,7 @@
 
     private async void HandleTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        rotation += 0.01;
+        rotation += Reciprocal ? -0.01 : 0.01;
         if (_context is null)
         {
             return;
@@ -94,7 +98,7 @@
         await batch.FillAsync(FillRule.EvenOdd);
     }
 
-    /*protected override async Task OnAfterRenderAsync(bool first_render)
+    protected override async Task OnAfterRenderAsync(bool first_render)
     {
         if (first_render)
         {

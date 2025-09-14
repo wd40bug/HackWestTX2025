@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 public struct LovePercentageMeaning
 {
 
-    
+
     public string message;
     public string color;
     public int flower;
@@ -71,7 +71,7 @@ public class LoveResults
     required public WeightedResult<int> PowerPhraseCount;
     required public WeightedResult<int> PowerAbbrevCount;
     required public WeightedResult<int> WinkyCount;
-    required public string mostSent;
+    required public string mostSentEmoji;
 }
 
 public struct Message
@@ -198,14 +198,15 @@ public class ChatLog(List<Message> messageLog)
             }
         }
         responseTime = MessageLog[responseIndex].Time.Subtract(MessageLog[messageIndex].Time);
-        
+
         TimeSpan days = new TimeSpan(3, 0, 0, 0);
         if (responseTime.CompareTo(days) > 0)
         {
             return days;
-            
-        }else{return responseTime;}
-        
+
+        }
+        else { return responseTime; }
+
     }
 
     //find first and last day of messages by checking if the message is earlier/later than earliest/latest date
@@ -436,7 +437,7 @@ public class ChatLog(List<Message> messageLog)
         int messageIndex = 0;
         int userStartIndex = 0;
         //ella code
-        
+
         int powerAbbrevCount = 0;
         int numDays = 0;
         double msgsPerDay = 0;
@@ -507,7 +508,7 @@ public class ChatLog(List<Message> messageLog)
         numDays = (lastDay.Date - firstDay.Date).Days;
         msgsPerDay = (double)otherMessageCount / numDays;
         var mostSent = emojiCounter.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-        
+
 
 
         WeightedResult<T> wd<T>(T val)
@@ -530,7 +531,7 @@ public class ChatLog(List<Message> messageLog)
             PowerPhraseCount = wd(powerPhraseCount),
             PowerAbbrevCount = wd(powerAbbrevCount),
             WinkyCount = wd(winkyCount),
-            mostSent = mostSent
+            mostSentEmoji = mostSent
         };
 
         results.Meaning = new LovePercentageMeaning(CalculateLovePercent(results));

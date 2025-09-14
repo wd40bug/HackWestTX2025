@@ -11,12 +11,12 @@
         <UploadFile OnLove="@LoveCalculated" />
         ; break;
     case Page.Loading:
-        <Loading Progress="@progress" />
+        <Loading Progress="@progress" Reciprocal="@reciprocal" />
         ; break;
     case Page.Results:
         @if (results is not null)
         {
-            <Results results="@results" />
+            <Results results="@results" Reciprocal="@ReciprocalCallback" />
         }
         else
         {
@@ -28,6 +28,7 @@
 
 
 @code {
+    private bool reciprocal = false;
     private double progress;
     public async Task update_progress(double new_progress)
     {
@@ -45,19 +46,34 @@
     LoveResults? results;
     private List<Message> parse_json = new List<Message>();
 
-    public async void LoveCalculated((IBrowserFile file, string token) args)
-    {
-        Console.WriteLine("Love calculated");
-        state = Page.Loading;
-        await InvokeAsync(StateHasChanged);
-        parse_json = await FileHandle.ParseJson(args.file, args.token);
 
+    private async Task calculate_love()
+    {
         Console.WriteLine("Number of messages: " + parse_json.Count());
         ChatLog clog = new ChatLog(parse_json);
         results = await Task.Run(() => clog.FindStats((Func<double, Task>)update_progress));
         state = Page.Results;
         await InvokeAsync(StateHasChanged);
         Console.WriteLine("Finished Calculating Love!!!");
+    }
+    public async void LoveCalculated((IBrowserFile file, string token) args)
+    {
+        reciprocal = false;
+        Console.WriteLine("Love calculated");
+        state = Page.Loading;
+        await InvokeAsync(StateHasChanged);
+        parse_json = await FileHandle.ParseJson(args.file, args.token);
+        await calculate_love();
+    }
+
+    public async void ReciprocalCallback()
+    {
+        reciprocal = !reciprocal;
+        progress = 0;
+        state = Page.Loading;
+        await InvokeAsync(StateHasChanged);
+        parse_json = parse_json.Select(i => { Message n = i; n.Self = !i.Self; return n; }).ToList();
+        await calculate_love();
     }
 }
 

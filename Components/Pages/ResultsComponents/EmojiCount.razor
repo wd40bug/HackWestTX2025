@@ -6,12 +6,18 @@
 
     [Parameter]
     [EditorRequired]
-    public string mostSent{ get; set; }
+    public string mostSent { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public double emojiRatio { get; set; }
 }
 
 <div class="emoji-count-container">
     <h1 class="emoji-count-text">@mostSent</h1>
-    <h2 class="text">They sent you @emojiCount emojis, and this was their most common emoji</h2>
+    <h2 class="text">They sent you @emojiCount emojis. That means on average, every message had @Math.Round(emojiRatio,
+                2) emojis, and
+        this was their most common emoji</h2>
 </div>
 
 <style>

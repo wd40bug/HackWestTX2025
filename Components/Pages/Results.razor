@@ -32,6 +32,7 @@
                         break;
                     case ResultKind.periodEnd:
                         <PeriodEndCount PeriodEnd="@results.PeriodEndCount.Value" />
+                        break;
                     case ResultKind.averageMessageCount:
                         <AverageMessagesPerDay averageMessagesPerDay="results.AverageMessagesPerDay.Value" />
                         break;
@@ -43,8 +44,9 @@
                         break;
                     case ResultKind.powerAbbrev:
                         <PowerAbbrev powerAbbrevCount="results.PowerAbbrevCount.Value"/>
+                        break;
                     case ResultKind.emojiCount:
-                        <EmojiCount emojiCount="results.EmojiCount.Value" mostSent="@results.mostSent"/>
+                        <EmojiCount emojiCount="results.EmojiCount.Value" mostSent="@results.mostSentEmoji" emojiRatio="@((double)results.EmojiCount.Value / results.OtherMessageCount)"/>
                         break;
                     case ResultKind.winkyCount:
                         <WinkyCount winkyCount="results.WinkyCount.Value" />
@@ -61,6 +63,9 @@
                                                 results.UserMessageCount, 3))</span></b>
             </h1>
         </div>
+    </div>
+    <div class="reciprocal-button-container">
+        <button class="reciprocal-button" @onclick="HandleReciprocalClick">Reciprocal Analysis</button>
     </div>
 </div>
 
@@ -95,6 +100,24 @@
         gap: 20px;
     }
 
+    .reciprocal-button-container {
+        margin: 10px;
+        padding: 20px;
+        gap: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .reciprocal-button {
+        height: 70px;
+        width: 400px;
+        border-radius: 10px;
+        border: 0;
+        background-color: @BlazorTest.ColorConstants.light_pink;
+        font-size: 30px;
+    }
+
     .message-nums-ratio {
         color:
             @( Math.Abs(((double)results.OtherMessageCount / results.UserMessageCount - 1)) < .1 ? 
@@ -124,7 +147,7 @@
 
     .result-item {
         border-radius: 20px;
-        height: 120px;
+        height: 140px;
         background-color:
             @BlazorTest.ColorConstants.light_pink
         ;
@@ -264,6 +287,10 @@
     [Parameter]
     [EditorRequired]
     public LoveResults results { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback Reciprocal{get;set;}
     @* 
     [Parameter]
     [EditorRequired]
@@ -283,6 +310,10 @@
         ret.Add((results.EmojiCount.Weight, ResultKind.emojiCount));
         ret.Add((results.WinkyCount.Weight, ResultKind.winkyCount));
         return ret.OrderByDescending(i => Math.Abs(i.Item1)).Select(i => i.Item2).ToList();
+    }
+
+    private void HandleReciprocalClick(){
+        Reciprocal.InvokeAsync();
     }
 
 
