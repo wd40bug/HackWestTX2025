@@ -1,2 +1,95 @@
 @rendermode InteractiveServer
-<p>TODO: loading</p>
+@using Excubo.Blazor.Canvas
+@using System.Timers
+@using Excubo.Blazor.Canvas.Contexts
+@inject Microsoft.JSInterop.IJSRuntime js;
+
+<Canvas @ref="helper_canvas" width="@size" height="@size" />
+
+@code {
+    public double progress = 0;
+    private double size = 700;
+    private double num_petals = 20;
+    private double petal_inner_rad = 210;
+    private Canvas helper_canvas;
+    private ElementReference normal_canvas;
+    private double rotation = 0.0;
+    private Timer _timer;
+    private Timer _timer2;
+    private Context2D _context;
+
+    private async void HandleTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        rotation += 0.01;
+        await using var batch = _context.CreateBatch();
+        await draw_background(batch);
+        await draw_petals(batch);
+        await draw_sepia(batch);
+
+        await InvokeAsync(StateHasChanged); // Update the UI
+    }
+
+    private async void HandleProgressTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        progress += .1;
+
+        await InvokeAsync(StateHasChanged); // Update the UI
+    }
+
+    public void Dispose()
+    {
+        _timer2?.Dispose();
+        _timer?.Dispose();
+    }
+
+    private async Task draw_background(Batch2D batch)
+    {
+        await batch.FillStyleAsync("red");
+        await batch.FillRectAsync(0, 0, size,
+        size);
+    }
+
+    private async Task draw_petals(Batch2D batch)
+    {
+        double delta_theta = 2 * Math.PI / num_petals;
+        for (int i = 0; i < num_petals; i++)
+        {
+            if (i < progress * num_petals && i != num_petals - 1)
+            {
+                continue;
+            }
+            double angle = i * delta_theta + rotation;
+            double x = size / 2 + Math.Cos(angle - Math.PI / 2) * petal_inner_rad;
+            double y = size / 2 + Math.Sin(angle - Math.PI / 2) * petal_inner_rad;
+            await batch.BeginPathAsync();
+            await batch.EllipseAsync(x, y, 30, 120, angle, 0, 2 * Math.PI);
+            await batch.FillStyleAsync("white");
+            await batch.FillAsync(FillRule.NonZero);
+        }
+    }
+
+    private async Task draw_sepia(Batch2D batch)
+    {
+        await batch.BeginPathAsync();
+        await batch.ArcAsync(size / 2, size / 2, 120, 0, 2 * Math.PI);
+        await batch.FillStyleAsync("yellow");
+        await batch.FillAsync(FillRule.EvenOdd);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool first_render)
+    {
+        if (first_render)
+        {
+            _context = await helper_canvas.GetContext2DAsync();
+            _timer = new Timer(10); // 1 second interval
+            _timer.Elapsed += HandleTimerElapsed;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+
+            _timer = new Timer(1000); // 1 second interval
+            _timer.Elapsed += HandleProgressTimerElapsed;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+    }
+}
