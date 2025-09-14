@@ -10,7 +10,9 @@ public struct LoveResults
     public int userMessageCount;
     public double averageResponseTime;
     public int powerWordCount;
+    public int periodEndCount;
 }
+
 public struct Message
 {
     public DateTime Time;
@@ -112,13 +114,23 @@ public class ChatLog(List<Message> messageLog)
     {
         int powerWordCount = 0;
         List<string> powerWordList = new List<String>() {"love", "ily", "heart", "dear", "honey", "hun", "hon", "haha",
-        "sweet", "cute", "pretty", "handsome"};
+        "sweet", "cute", "pretty", "handsome", "beautiful", "hot", "sexy"};
 
         foreach (string powerWord in powerWordList)
         {
             powerWordCount += Regex.Matches(message, powerWord).Count;
         }
         return powerWordCount;
+    }
+
+    // Count up the number of times the other user ended a message with a period
+    private int MessageEndsInPeriodTest(string message)
+    {
+        if (message.EndsWith("."))
+        {
+            return 1;
+        }
+        return 0;
     }
 
     // Count up all the FindStats
@@ -131,6 +143,7 @@ public class ChatLog(List<Message> messageLog)
         int userMessageCount = 0;
         double responseTimeSum = 0;
         int powerWordCount = 0;
+        int periodEndCount = 0;
         // number of responses
         int responseSum = 0;
         bool moreMessages = true;
@@ -177,6 +190,7 @@ public class ChatLog(List<Message> messageLog)
                 heartCount += FindHeartCount(currentMessage.Content);
                 emojiCount += FindEmojiCount(currentMessage);
                 powerWordCount += FindPowerWordCount(currentMessage.Content);
+                periodEndCount += MessageEndsInPeriodTest(currentMessage.Content);
             }
             if (currentMessage.Self)
             {
@@ -192,6 +206,7 @@ public class ChatLog(List<Message> messageLog)
         Console.WriteLine("Total number of <3s: " + heartCount);
         Console.WriteLine("Total number of emojis: " + emojiCount);
         Console.WriteLine("Total number of power words: " + powerWordCount);
+        Console.WriteLine("Number of times other person ended a message with a period: " + periodEndCount);
         return averageResponseTime;
     }
 }
