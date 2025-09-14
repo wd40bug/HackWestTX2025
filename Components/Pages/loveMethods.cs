@@ -13,6 +13,8 @@ public struct LoveResults
     public int powerWordCount;
     public int periodEndCount;
     public double averageMessagesPerDay;
+    public int powerPhraseCount;
+    public int powerAbbrevCount;
 }
 
 public struct Message
@@ -149,17 +151,40 @@ public class ChatLog(List<Message> messageLog)
         }
     }
     //
+    private int FindPowerPhraseCount(string message)
+    {
+        string lowMessage = message.ToLower();
+        int powerPhraseCount = 0;
+        List<string> powerPhraseList = new List<String>() {"good morning", "good night", "i love you", "i love u", "goodmorning", "goodnight"};
 
+        foreach (string powerWord in powerPhraseList)
+        {
+            powerPhraseCount += Regex.Matches(lowMessage, powerWord).Count;
+        }
+        return powerPhraseCount;
+    }
+    private int FindPowerAbbrevCount(string message)
+    {
+        string lowMessage = message.ToLower();
+        int powerAbbrevCount = 0;
+        List<string> powerAbbrevList = new List<String>() {"ily", "gm", "gn"};
 
+        foreach (string powerWord in powerAbbrevList)
+        {
+            powerAbbrevCount += Regex.Matches(lowMessage, powerWord).Count;
+        }
+        return powerAbbrevCount;
+    }
     private int FindPowerWordCount(string message)
     {
+        string lowMessage = message.ToLower();
         int powerWordCount = 0;
         List<string> powerWordList = new List<String>() {"love", "ily", "heart", "dear", "honey", "hun", "hon", "haha",
         "sweet", "cute", "pretty", "handsome", "beautiful", "hot", "sexy"};
 
         foreach (string powerWord in powerWordList)
         {
-            powerWordCount += Regex.Matches(message, powerWord).Count;
+            powerWordCount += Regex.Matches(lowMessage, powerWord).Count;
         }
         return powerWordCount;
     }
@@ -239,6 +264,12 @@ public class ChatLog(List<Message> messageLog)
         bool moreMessages = true;
         int messageIndex = 0;
         int userStartIndex = 0;
+        //ella code
+        int powerAbbrevCount = 0;
+        int numDays = 0;
+        float msgsPerDay = 0;
+        int powerPhraseCount = 0;
+        //
 
         List<double> responseTimeList = new List<double>();
 
@@ -246,6 +277,7 @@ public class ChatLog(List<Message> messageLog)
         {
             Message currentMessage = MessageLog[messageIndex];
             //ella code
+            
             //check date and update
             CountDays(messageIndex);
             //
@@ -286,6 +318,8 @@ public class ChatLog(List<Message> messageLog)
                 emojiCount += FindEmojiCount(currentMessage);
                 powerWordCount += FindPowerWordCount(currentMessage.Content);
                 periodEndCount += MessageEndsInPeriodTest(currentMessage.Content);
+                powerAbbrevCount += FindPowerAbbrevCount(currentMessage.Content);
+                powerPhraseCount += FindPowerPhraseCount(currentMessage.Content);
             }
             if (currentMessage.Self)
             {
@@ -296,17 +330,20 @@ public class ChatLog(List<Message> messageLog)
         }
 
         double averageResponseTime = responseTimeSum / responseSum;
+        //ella code
+        numDays = (lastDay.Date - firstDay.Date).Days;
+        msgsPerDay = (float)otherMessageCount / numDays;
+        //
         Console.WriteLine("Number of messages from other person: " + otherMessageCount + "\nNumber of messages from user: " + userMessageCount);
         Console.WriteLine("Average response time: " + averageResponseTime);
         Console.WriteLine("Total number of extra ys: " + extraYCount);
         Console.WriteLine("Total number of <3s: " + heartCount);
         Console.WriteLine("Total number of emojis: " + emojiCount);
         //ella code
-        int numDays = (lastDay.Date - firstDay.Date).Days;
-        float msgsPerDay = (float)otherMessageCount / numDays;
         Console.WriteLine("numDays: " + numDays);
         Console.WriteLine("Messages per day from other person: " + msgsPerDay);
         Console.WriteLine("Total number of ;)s: " + winkyCount);
+        Console.WriteLine("Total number of spelled out phrases: " + powerPhraseCount + " vs abbreviated: " + powerAbbrevCount);
         //
         Console.WriteLine("Total number of power words: " + powerWordCount);
         Console.WriteLine("Number of times other person ended a message with a period: " + periodEndCount);
