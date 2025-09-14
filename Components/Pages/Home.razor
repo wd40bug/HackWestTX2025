@@ -5,14 +5,13 @@
 <PageTitle>LOVE-ME-NOT</PageTitle>
 
 <h1 class="titan-one title">LOVE-ME-NOT</h1>
-
 @switch (state)
 {
     case Page.UploadFile:
         <UploadFile OnLove="@LoveCalculated" />
         ; break;
     case Page.Loading:
-        <Loading />
+        <Loading Progress="@progress" />
         ; break;
     case Page.Results:
         @if (results is not null)
@@ -29,6 +28,13 @@
 
 
 @code {
+    private double progress;
+    public async Task update_progress(double new_progress)
+    {
+        progress = new_progress;
+        await InvokeAsync(StateHasChanged);
+    }
+
     enum Page
     {
         UploadFile,
@@ -46,14 +52,9 @@
         await InvokeAsync(StateHasChanged);
         parse_json = await FileHandle.ParseJson(args.file, args.token);
 
-        /*foreach (var message in parse_json)
-        {
-        Console.Write(message.Time + ": ");
-        Console.WriteLine(message.Content);
-        }*/
         Console.WriteLine("Number of messages: " + parse_json.Count());
         ChatLog clog = new ChatLog(parse_json);
-        results = clog.FindStats();
+        results = await Task.Run(() => clog.FindStats((Func<double, Task>)update_progress));
         state = Page.Results;
         await InvokeAsync(StateHasChanged);
         Console.WriteLine("Finished Calculating Love!!!");

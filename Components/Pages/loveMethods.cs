@@ -1,5 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 public struct LovePercentageMeaning
 {
@@ -395,8 +396,9 @@ public class ChatLog(List<Message> messageLog)
     }
 
     // Count up all the FindStats
-    public LoveResults FindStats()
+    public async Task<LoveResults> FindStats(Func<double, Task> progress_callback)
     {
+        await progress_callback(.1);
         int extraYCount = 0;
         int heartCount = 0;
         int winkyCount = 0;
@@ -422,6 +424,7 @@ public class ChatLog(List<Message> messageLog)
 
         while (moreMessages && messageIndex < MessageLog.Count)
         {
+            await progress_callback((double)messageIndex / MessageLog.Count * 0.9 + .1);
             Message currentMessage = MessageLog[messageIndex];
             //ella code
 

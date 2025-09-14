@@ -3,19 +3,32 @@
 @using System.Timers
 @using Excubo.Blazor.Canvas.Contexts
 @inject Microsoft.JSInterop.IJSRuntime js;
-
 <Canvas @ref="helper_canvas" width="@size" height="@size" />
 
 @code {
-    public double progress = 0;
+    private double progress;
+    [Parameter]
+    [EditorRequired]
+    public double Progress
+    {
+        get => progress;
+        set
+        {
+            progress = value;
+            StateHasChanged();
+        }
+    }
+    @* [Parameter]
+    public EventCallback<double> ProgressChanged { get; set; } *@
     private double size = 700;
-    private double num_petals = 20;
+    private double num_petals = 24;
     private double petal_inner_rad = 210;
     private Canvas? helper_canvas;
     private double rotation = 0.0;
     private Timer? _timer;
-    private Timer? _timer2;
     private Context2D? _context;
+
+    private int time = 10;
 
     private async void HandleTimerElapsed(object? sender, ElapsedEventArgs e)
     {
@@ -40,19 +53,12 @@
             //ignore
         }
 
-        @* await InvokeAsync(StateHasChanged); // Update the UI *@
-    }
 
-    private async void HandleProgressTimerElapsed(object? sender, ElapsedEventArgs e)
-    {
-        progress += .1;
-
-        await InvokeAsync(StateHasChanged); // Update the UI
     }
 
     public void Dispose()
     {
-        _timer2?.Dispose();
+        _timer?.Stop();
         _timer?.Dispose();
     }
 
@@ -67,7 +73,8 @@
         double delta_theta = 2 * Math.PI / num_petals;
         for (int i = 0; i < num_petals; i++)
         {
-            if (i < progress * num_petals && i != num_petals - 1)
+            @* Console.WriteLine("Progress: " + Progress); *@
+            if (i < Progress * num_petals && i != num_petals - 1)
             {
                 continue;
             }
@@ -94,15 +101,10 @@
         if (first_render)
         {
 
-            _timer = new Timer(10); // 1 second interval
+            _timer = new Timer(time); // 1 second interval
             _timer.Elapsed += HandleTimerElapsed;
             _timer.AutoReset = true;
             _timer.Enabled = true;
-
-            _timer2 = new Timer(1000); // 1 second interval
-            _timer2.Elapsed += HandleProgressTimerElapsed;
-            _timer2.AutoReset = true;
-            _timer2.Enabled = true;
 
             if (helper_canvas is not null)
             {
