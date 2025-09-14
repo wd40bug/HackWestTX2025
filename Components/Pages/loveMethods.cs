@@ -112,7 +112,7 @@ public class ChatLog(List<Message> messageLog)
         return MessageLog[messageIndex].Content;
     }
 
-    // Sees if a message contains "hey" and returns the number of extra ys (not including the initial one)
+    // Sees if a message contains "heyy" and returns the number of extra ys (not including the initial one)
     private int FindYCount(string message)
     {
         int yCount = 0;
@@ -492,7 +492,7 @@ public class ChatLog(List<Message> messageLog)
             if (!currentMessage.Self)
             {
                 otherMessageCount++;
-                if (currentMessage.Content.ToLower().Contains("hey")) heyCount++;
+                if (currentMessage.Content.ToLower().Contains("heyy")) heyCount++;
                 extraYCount += FindYCount(currentMessage.Content);
                 heartCount += FindHeartCount(currentMessage.Content);
                 winkyCount += FindWinkyCount(currentMessage.Content);
@@ -561,7 +561,7 @@ public class ChatLog(List<Message> messageLog)
         //
         Console.WriteLine("Total number of power words: " + powerWordCount);
         Console.WriteLine("Number of times other person ended a message with a period: " + periodEndCount);
-        Console.WriteLine("Average number of Ys per hey: " + Math.Round((double)extraYCount / heyCount), 2);
+        Console.WriteLine("Average number of Ys per heyy: " + Math.Round((double)extraYCount / heyCount), 2);
         Console.WriteLine("Total love percent: " + results.Love_percentage);
         return results;
     }
