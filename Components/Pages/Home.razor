@@ -16,7 +16,7 @@
     case Page.Results:
         @if (results is not null)
         {
-            <Results results="@results" Reciprocal="@ReciprocalCallback" />
+            <Results results="@results" Reciprocal="@ReciprocalCallback" Home="@HomeCallBack"/>
         }
         else
         {
@@ -74,6 +74,12 @@
         await InvokeAsync(StateHasChanged);
         parse_json = parse_json.Select(i => { Message n = i; n.Self = !i.Self; return n; }).ToList();
         await calculate_love();
+    }
+
+    public async void HomeCallBack(){
+        progress = 0;
+        state = Page.UploadFile;
+        await InvokeAsync(StateHasChanged);
     }
 }
 
