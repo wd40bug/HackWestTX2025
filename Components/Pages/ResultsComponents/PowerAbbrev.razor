@@ -1,0 +1,23 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public double powerAbbrevCount { get; set; }
+}
+
+<div class="power-abbrev-container">
+    <img class="clock-img" src="../clock.webp" />
+    <h2 class="text">They said @powerAbbrevCount power abbreviations (abbreviations like ily, gn, etc.)</h2>
+</div>
+
+<style>
+    .power-abbrev-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+    }
+
+    .clock-img {
+    height: 100px;
+    }
+</style>

@@ -32,6 +32,17 @@
                         break;
                     case ResultKind.periodEnd:
                         <PeriodEndCount PeriodEnd="@results.PeriodEndCount.Value" />
+                    case ResultKind.averageMessageCount:
+                        <AverageMessagesPerDay averageMessagesPerDay="results.AverageMessagesPerDay.Value" />
+                        break;
+                    case ResultKind.powerWords:
+                        <PowerWords powerWordCount="results.PowerWordCount.Value"/>
+                        break;
+                    case ResultKind.powerPhrase:
+                        <PowerPhrases powerPhraseCount="results.PowerPhraseCount.Value"/>
+                        break;
+                    case ResultKind.powerAbbrev:
+                        <PowerAbbrev powerAbbrevCount="results.PowerAbbrevCount.Value"/>
                         break;
                 }
             </div>
@@ -236,6 +247,10 @@
         heartCount,
         extraY,
         periodEnd,
+        averageMessageCount,
+        powerWords,
+        powerPhrase,
+        powerAbbrev
     }
 
     [Parameter]
@@ -253,6 +268,10 @@
         ret.Add((results.HeartCount.Weight, ResultKind.heartCount));
         ret.Add((results.ExtraYCount.Weight, ResultKind.extraY));
         ret.Add((results.PeriodEndCount.Weight, ResultKind.periodEnd));
+        ret.Add((results.AverageMessagesPerDay.Weight, ResultKind.averageMessageCount));
+        ret.Add((results.PowerWordCount.Weight, ResultKind.powerWords));
+        ret.Add((results.PowerPhraseCount.Weight, ResultKind.powerPhrase));
+        ret.Add((results.PowerAbbrevCount.Weight, ResultKind.powerAbbrev));
         return ret.OrderByDescending(i => Math.Abs(i.Item1)).Select(i => i.Item2).ToList();
     }
 
