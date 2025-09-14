@@ -8,7 +8,7 @@
     <div class="inner-container">
         <InputFile OnChange="HandleFileSelected" />
         <div class="token">
-            <p>Discord Token:</p>
+            <p>Discord User Id:</p>
             <InputNumber class="discord_token" @bind-Value="@token" />
         </div>
     </div>
@@ -18,47 +18,76 @@
     </div>
 
 
+
 </div>
-<div class="upload-tutorial-spacer" />
-<div class="upload-tutorial">
-    <h1><b>Tutorial</b></h1>
-    <br />
-    <h2>Download DiscordChatExporter</h2>
-    <p>From <a
-            href="https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.46">https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.46</a>
-        download
-        DiscordChatExporter.Cli.&ltplatform&gt-&ltarch&gt.zip (fill in your platform and architecture). Extract the file
-        to a folder.</p>
-    <h2>Get discord token</h2>
-    <p>Follow instructions at <a
-            href="https://github.com/Tyrrrz/DiscordChatExporter/blob/master/.docs/Token-and-IDs.md">https://github.com/Tyrrrz/DiscordChatExporter/blob/master/.docs/Token-and-IDs.md</a>
-        to determine your discord token</p>
-    <h2>List Chats</h2>
-    <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter dm` (fill in your token) to list your dms. Copy
-        the snowflake of the
-        one you want to export</p>
-    <h2>Export</h2>
-    <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter export &ltSNOWFLAKE&gt -o &ltOUTPUT_FILE&gt -f
-        json` (fill in your token, snowflake, and output file)</p>
-</div>
+@if (!tutorial_shown)
+{
+    <button class="tutorial-button" @onclick="toggleTutorial">show tutorial</button>
+}
+else
+{
+    <button class="tutorial-button" @onclick="toggleTutorial">hide tutorial</button>
+    <div class="upload-tutorial-spacer" />
+    <div class="upload-tutorial">
+        <h1><b>Tutorial</b></h1>
+        <br />
+        <h2>Download DiscordChatExporter</h2>
+        <p>From <a
+                href="https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.46">https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.46</a>
+            download
+            DiscordChatExporter.Cli.&ltplatform&gt-&ltarch&gt.zip (fill in your platform and architecture). Extract the file
+            to a folder.</p>
+        <h2>Get discord token</h2>
+        <p>Follow instructions at <a
+                href="https://github.com/Tyrrrz/DiscordChatExporter/blob/master/.docs/Token-and-IDs.md">https://github.com/Tyrrrz/DiscordChatExporter/blob/master/.docs/Token-and-IDs.md</a>
+            to determine your discord token</p>
+        <h2>List Chats</h2>
+        <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter dm` (fill in your token) to list your dms. Copy
+            the snowflake of the
+            one you want to export</p>
+        <h2>Export</h2>
+        <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter export &ltSNOWFLAKE&gt -o &ltOUTPUT_FILE&gt -f
+            json` (fill in your token, snowflake, and output file)</p>
+    </div>
+}
+
 
 <style>
+    .tutorial-button {
+        background-color:
+            @BlazorTest.ColorConstants.light_pink
+        ;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        border: 0;
+        border-radius: 5px;
+    }
+
     .upload-tutorial-spacer {
-        height: 100px;
+        height: 0px;
     }
 
     .upload-tutorial {
+        display: inline-block;
         background-color:
             @BlazorTest.ColorConstants.light_purple
         ;
         border-radius: 10px;
         padding: 10px;
+        position: absolute;
+        transform: translate(-50%, 0%);
     }
 </style>
 
 
 
 @code {
+    private bool tutorial_shown = false;
+    private void toggleTutorial()
+    {
+        tutorial_shown = !tutorial_shown;
+    }
+
     [Parameter]
     [EditorRequired]
     public EventCallback<(IBrowserFile, string)> OnLove { get; set; }
