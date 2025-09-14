@@ -1,0 +1,19 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int PeriodEnd { get; set; }
+}
+
+<div class="period-container">
+    <h2>They ended a message with <q>.</q> @PeriodEnd times! 😬</h2>
+</div>
+
+<style>
+    .period-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+</style>

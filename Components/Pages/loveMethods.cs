@@ -60,8 +60,8 @@ public class LoveResults
     required public WeightedResult<int> ExtraYCount;
     required public WeightedResult<int> HeartCount;
     required public WeightedResult<int> EmojiCount;
-    required public WeightedResult<int> OtherMessageCount;
-    required public WeightedResult<int> UserMessageCount;
+    required public int OtherMessageCount;
+    required public int UserMessageCount;
     required public WeightedResult<double> AverageResponseTime;
     required public WeightedResult<int> PowerWordCount;
     required public WeightedResult<int> PeriodEndCount;
@@ -270,7 +270,7 @@ public class ChatLog(List<Message> messageLog)
         double averageResponseTime = results.AverageResponseTime.Value;
         double messagesPerDay = results.AverageMessagesPerDay.Value;
         int powerWordCount = results.PowerWordCount.Value;
-        int otherMessageCount = results.OtherMessageCount.Value;
+        int otherMessageCount = results.OtherMessageCount;
         double messagePowerWordRatio = (double)otherMessageCount / (double)powerWordCount;
         int powerPhraseCount = results.PowerPhraseCount.Value;
         int powerAbbrevCount = results.PowerAbbrevCount.Value;
@@ -391,7 +391,7 @@ public class ChatLog(List<Message> messageLog)
             results.PeriodEndCount.Weight = -percentLoss;
         }
 
-        results.Love_percentage = results.ExtraYCount.Weight + results.HeartCount.Weight + results.EmojiCount.Weight + results.OtherMessageCount.Weight + results.UserMessageCount.Weight + results.AverageResponseTime.Weight + results.PowerWordCount.Weight + results.PeriodEndCount.Weight + results.AverageMessagesPerDay.Weight + results.PowerPhraseCount.Weight + results.PowerAbbrevCount.Weight + results.WinkyCount.Weight;
+        results.Love_percentage = results.ExtraYCount.Weight + results.HeartCount.Weight + results.EmojiCount.Weight + results.AverageResponseTime.Weight + results.PowerWordCount.Weight + results.PeriodEndCount.Weight + results.AverageMessagesPerDay.Weight + results.PowerPhraseCount.Weight + results.PowerAbbrevCount.Weight + results.WinkyCount.Weight;
         return results.Love_percentage;
     }
 
@@ -495,8 +495,8 @@ public class ChatLog(List<Message> messageLog)
             ExtraYCount = wd(extraYCount),
             HeartCount = wd(heartCount),
             EmojiCount = wd(emojiCount),
-            OtherMessageCount = wd(otherMessageCount),
-            UserMessageCount = wd(userMessageCount),
+            OtherMessageCount = otherMessageCount,
+            UserMessageCount = userMessageCount,
             AverageResponseTime = wd(averageResponseTime),
             PowerWordCount = wd(powerWordCount),
             PeriodEndCount = wd(periodEndCount),

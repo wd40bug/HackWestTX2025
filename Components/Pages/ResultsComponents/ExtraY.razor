@@ -1,0 +1,26 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int ExtraYs { get; set; }
+}
+
+<div class="extra-y-container">
+    <h2 class="extra-y-text"><b><q class="heyyyyyy">@hey()</q></b> was the average extended hey</h2>
+</div>
+
+<style>
+    .extra-y-container {
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        display: flex;
+    }
+</style>
+
+@code {
+    private string hey()
+    {
+        return "He" + new string('y', Math.Max(1, ExtraYs));
+    }
+}

@@ -27,9 +27,24 @@
                     case ResultKind.heartCount:
                         <HeartCount heartCount="results.HeartCount.Value" />
                         break;
+                    case ResultKind.extraY:
+                        <ExtraY ExtraYs="@results.ExtraYCount.Value" />
+                        break;
+                    case ResultKind.periodEnd:
+                        <PeriodEndCount PeriodEnd="@results.PeriodEndCount.Value" />
+                        break;
                 }
             </div>
         }
+    </div>
+    <div class="message-nums-container">
+        <div class="message-nums">
+            <h1 class="message-nums-text">They sent @results.OtherMessageCount messages. You sent
+                @results.UserMessageCount. Thats a ratio of <b><span
+                    class="message-nums-ratio">@(Math.Round((double)results.OtherMessageCount /
+                                                results.UserMessageCount, 3))</span></b>
+            </h1>
+        </div>
     </div>
 </div>
 
@@ -56,6 +71,39 @@
         margin: 10px;
         padding: 20px;
         gap: 20px;
+    }
+
+    .message-nums-container {
+        margin: 10px;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .message-nums-ratio {
+        color:
+            @( Math.Abs(((double)results.OtherMessageCount / results.UserMessageCount - 1)) < .1 ? 
+                "#00FF00" :
+                "red")
+            ;
+        
+    }
+
+    .message-nums-text {
+        font-size: 20pt;
+        color:
+            @BlazorTest.ColorConstants.mimi
+        ;
+    }
+
+    .message-nums {
+        height: 90px;
+        background-color:
+            @BlazorTest.ColorConstants.light_pink
+        ;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .result-item {
@@ -139,7 +187,8 @@
 
         display: grid;
         grid-template-columns: 1fr 1fr;
-        column-gap: 10px;
+        column-gap: 20px;
+        row-gap: 20px;
         padding: 20px;
     }
 
@@ -156,6 +205,7 @@
 
 
 @code {
+
     private string flower_name()
     {
         @* return "../flowers/wilting_flower" + results.Meaning.flower + ".png"; *@
@@ -184,6 +234,8 @@
     {
         responseTime,
         heartCount,
+        extraY,
+        periodEnd,
     }
 
     [Parameter]
@@ -199,7 +251,9 @@
         var ret = new List<(double, ResultKind)>(1);
         ret.Add((results.AverageResponseTime.Weight, ResultKind.responseTime));
         ret.Add((results.HeartCount.Weight, ResultKind.heartCount));
-        return ret.OrderByDescending(i => i.Item1).Select(i => i.Item2).ToList();
+        ret.Add((results.ExtraYCount.Weight, ResultKind.extraY));
+        ret.Add((results.PeriodEndCount.Weight, ResultKind.periodEnd));
+        return ret.OrderByDescending(i => Math.Abs(i.Item1)).Select(i => i.Item2).ToList();
     }
 
 
