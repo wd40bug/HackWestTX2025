@@ -51,22 +51,22 @@ public class WeightedResult<T>(T value, double weight)
     public T Value = value;
     public double Weight = weight;
 }
-public struct LoveResults
+public class LoveResults
 {
     public double Love_percentage;
     public LovePercentageMeaning Meaning;
-    public WeightedResult<int> ExtraYCount;
-    public WeightedResult<int> HeartCount;
-    public WeightedResult<int> EmojiCount;
-    public WeightedResult<int> OtherMessageCount;
-    public WeightedResult<int> UserMessageCount;
-    public WeightedResult<double> AverageResponseTime;
-    public WeightedResult<int> PowerWordCount;
-    public WeightedResult<int> PeriodEndCount;
-    public WeightedResult<double> AverageMessagesPerDay;
-    public WeightedResult<int> PowerPhraseCount;
-    public WeightedResult<int> PowerAbbrevCount;
-    public WeightedResult<int> WinkyCount;
+    required public WeightedResult<int> ExtraYCount;
+    required public WeightedResult<int> HeartCount;
+    required public WeightedResult<int> EmojiCount;
+    required public WeightedResult<int> OtherMessageCount;
+    required public WeightedResult<int> UserMessageCount;
+    required public WeightedResult<double> AverageResponseTime;
+    required public WeightedResult<int> PowerWordCount;
+    required public WeightedResult<int> PeriodEndCount;
+    required public WeightedResult<double> AverageMessagesPerDay;
+    required public WeightedResult<int> PowerPhraseCount;
+    required public WeightedResult<int> PowerAbbrevCount;
+    required public WeightedResult<int> WinkyCount;
 }
 
 public struct Message
@@ -151,7 +151,7 @@ public class ChatLog(List<Message> messageLog)
     }
     //
 
-   
+
     private int FindEmojiCount(Message message)
     {
         int emojiCount = 0;
@@ -162,7 +162,7 @@ public class ChatLog(List<Message> messageLog)
         return emojiCount;
     }
 
-    
+
 
     // Returns the amount of time it took for the other person to respond. Takes index of initial message as parameter
     private TimeSpan TimeBetweenResponse(int messageIndex)
@@ -193,13 +193,11 @@ public class ChatLog(List<Message> messageLog)
         {
             //Console.WriteLine("old earliest date " + firstDay);
             firstDay = dateTime;
-            Console.WriteLine("new earliest date " + firstDay);
         }
         if (dateTime.CompareTo(lastDay) > 0)
         {
             //Console.WriteLine("old latest date " + lastDay);
             lastDay = dateTime;
-            Console.WriteLine("new latest date " + lastDay);
         }
     }
     //
@@ -207,7 +205,7 @@ public class ChatLog(List<Message> messageLog)
     {
         string lowMessage = message.ToLower();
         int powerPhraseCount = 0;
-        List<string> powerPhraseList = new List<String>() {"good morning", "good night", "i love you", "i love u", "goodmorning", "goodnight"};
+        List<string> powerPhraseList = new List<String>() { "good morning", "good night", "i love you", "i love u", "goodmorning", "goodnight" };
 
         foreach (string powerWord in powerPhraseList)
         {
@@ -219,7 +217,7 @@ public class ChatLog(List<Message> messageLog)
     {
         string lowMessage = message.ToLower();
         int powerAbbrevCount = 0;
-        List<string> powerAbbrevList = new List<String>() {"ily", "gm", "gn"};
+        List<string> powerAbbrevList = new List<String>() { "ily", "gm", "gn" };
 
         foreach (string powerWord in powerAbbrevList)
         {
@@ -253,7 +251,6 @@ public class ChatLog(List<Message> messageLog)
 
     private double CalculateLovePercent(LoveResults results)
     {
-        double lovePercent = 0;
 
 
         // Weights
@@ -268,13 +265,13 @@ public class ChatLog(List<Message> messageLog)
         // powerPhrase/PowerAbbreviation 5      done
 
 
-        double averageResponseTime = results.AverageResponseTime;
-        double messagesPerDay = results.AverageMessagesPerDay;
-        int powerWordCount = results.PowerWordCount;
-        int otherMessageCount = results.OtherMessageCount;
+        double averageResponseTime = results.AverageResponseTime.Value;
+        double messagesPerDay = results.AverageMessagesPerDay.Value;
+        int powerWordCount = results.PowerWordCount.Value;
+        int otherMessageCount = results.OtherMessageCount.Value;
         double messagePowerWordRatio = (double)otherMessageCount / (double)powerWordCount;
-        int powerPhraseCount = results.PowerPhraseCount;
-        int powerAbbrevCount = results.PowerAbbrevCount;
+        int powerPhraseCount = results.PowerPhraseCount.Value;
+        int powerAbbrevCount = results.PowerAbbrevCount.Value;
         double phraseAbbrevRatio;
         if (powerAbbrevCount != 0)
         {
@@ -289,96 +286,96 @@ public class ChatLog(List<Message> messageLog)
             phraseAbbrevRatio = 0;
         }
         double messagePhraseRatio = (double)otherMessageCount / (double)powerPhraseCount;
-        double heartWinkCount = results.HeartCount + results.WinkyCount;
-        int extraYCount = results.ExtraYCount;
-        double emojiMessageRatio = (double)results.EmojiCount / (double)otherMessageCount;
-        double periodEndMessageRatio = (double)results.PeriodEndCount / (double)otherMessageCount;
+        double heartWinkCount = results.HeartCount.Value + results.WinkyCount.Value;
+        int extraYCount = results.ExtraYCount.Value;
+        double emojiMessageRatio = (double)results.EmojiCount.Value / (double)otherMessageCount;
+        double periodEndMessageRatio = (double)results.PeriodEndCount.Value / (double)otherMessageCount;
 
         if (averageResponseTime < 900)
         {
-            lovePercent += 20;
+            results.AverageResponseTime.Weight = 20;
         }
         else if (averageResponseTime < 1600)
         {
-            lovePercent += 15;
+            results.AverageResponseTime.Weight = 15;
         }
         else if (averageResponseTime < 2000)
         {
-            lovePercent += 10;
+            results.AverageResponseTime.Weight = 10;
         }
         else
         {
-            lovePercent += 20000.0 / averageResponseTime;
+            results.AverageResponseTime.Weight = 20000.0 / averageResponseTime;
         }
 
         // + 21% if messages per day > 40
         if (messagesPerDay > 40.0)
         {
-            lovePercent += 21;
+            results.AverageMessagesPerDay.Weight = 21;
         }
         else
         {
-            lovePercent += .525 / (1 / messagesPerDay);
+            results.AverageMessagesPerDay.Weight = .525 / (1 / messagesPerDay);
         }
 
         // + 16% if message/powerWordRatio < 10
         if (messagePowerWordRatio < 10)
         {
-            lovePercent += 16;
+            results.PowerWordCount.Weight = 16;
         }
         else
         {
-            lovePercent += 160.0 / (messagePowerWordRatio);
+            results.PowerWordCount.Weight = 160.0 / (messagePowerWordRatio);
         }
 
         // + 5% if phraseAbbrevRatio > 4.25
         if (phraseAbbrevRatio > 4.25)
         {
-            lovePercent += 5;
+            results.PowerAbbrevCount.Weight = results.PowerPhraseCount.Weight = 5 / 2;
         }
         else
         {
-            lovePercent += 1.17647 / (1 / phraseAbbrevRatio);
+            results.PowerAbbrevCount.Weight = results.PowerPhraseCount.Weight = (1.17647 / (1 / phraseAbbrevRatio)) / 2;
         }
 
         // + 17% if messagePhraseRatio < 23
         if (messagePhraseRatio < 23)
         {
-            lovePercent += 17;
+            results.PowerPhraseCount.Weight += 17;
         }
         else
         {
-            lovePercent += 391.0 / messagePhraseRatio;
+            results.PowerPhraseCount.Weight += 391.0 / messagePhraseRatio;
         }
 
         // + 4% if heart + winky > 15
         if (heartWinkCount > 15)
         {
-            lovePercent += 4;
+            results.HeartCount.Weight = results.WinkyCount.Weight = 4 / 2;
         }
         else
         {
-            lovePercent += .26 * heartWinkCount;
+            results.HeartCount.Weight = results.WinkyCount.Weight = .26 * heartWinkCount / 2;
         }
 
         // + 7% if > 7 extra ys
         if (extraYCount > 7)
         {
-            lovePercent += 7;
+            results.ExtraYCount.Weight = 7;
         }
         else
         {
-            lovePercent += 1 * extraYCount;
+            results.ExtraYCount.Weight += 1 * extraYCount;
         }
 
         // + 10% if emojiMessageRatio > .75
         if (emojiMessageRatio > .75)
         {
-            lovePercent += 10;
+            results.EmojiCount.Weight = 10;
         }
         else
         {
-            lovePercent += 13.3333 * emojiMessageRatio;
+            results.EmojiCount.Weight = 13.3333 * emojiMessageRatio;
         }
 
         // up to -10% for periodEndMessageRatio
@@ -389,11 +386,11 @@ public class ChatLog(List<Message> messageLog)
             {
                 percentLoss = 10;
             }
-            lovePercent -= percentLoss;
+            results.PeriodEndCount.Weight = -percentLoss;
         }
 
-        results.Love_percentage = lovePercent;
-        return lovePercent;
+        results.Love_percentage = results.ExtraYCount.Weight + results.HeartCount.Weight + results.EmojiCount.Weight + results.OtherMessageCount.Weight + results.UserMessageCount.Weight + results.AverageResponseTime.Weight + results.PowerWordCount.Weight + results.PeriodEndCount.Weight + results.AverageMessagesPerDay.Weight + results.PowerPhraseCount.Weight + results.PowerAbbrevCount.Weight + results.WinkyCount.Weight;
+        return results.Love_percentage;
     }
 
     // Count up all the FindStats
@@ -416,7 +413,7 @@ public class ChatLog(List<Message> messageLog)
         //ella code
         int powerAbbrevCount = 0;
         int numDays = 0;
-        float msgsPerDay = 0;
+        double msgsPerDay = 0;
         int powerPhraseCount = 0;
         //
 
@@ -426,7 +423,7 @@ public class ChatLog(List<Message> messageLog)
         {
             Message currentMessage = MessageLog[messageIndex];
             //ella code
-            
+
             //check date and update
             CountDays(messageIndex);
             //
@@ -481,26 +478,31 @@ public class ChatLog(List<Message> messageLog)
         double averageResponseTime = responseTimeSum / responseSum;
         //ella code
         numDays = (lastDay.Date - firstDay.Date).Days;
-        msgsPerDay = (float)otherMessageCount / numDays;
+        msgsPerDay = (double)otherMessageCount / numDays;
+
+        WeightedResult<T> wd<T>(T val)
+        {
+            return new WeightedResult<T>(val, 0);
+        }
 
         LoveResults results = new LoveResults
         {
             Love_percentage = 0,
-            ExtraYCount = extraYCount,
-            HeartCount = heartCount,
-            EmojiCount = emojiCount,
-            OtherMessageCount = otherMessageCount,
-            UserMessageCount = userMessageCount,
-            AverageResponseTime = averageResponseTime,
-            PowerWordCount = powerWordCount,
-            PeriodEndCount = periodEndCount,
-            AverageMessagesPerDay = msgsPerDay,
-            PowerPhraseCount = powerPhraseCount,
-            PowerAbbrevCount = powerAbbrevCount,
-            WinkyCount = winkyCount
+            ExtraYCount = wd(extraYCount),
+            HeartCount = wd(heartCount),
+            EmojiCount = wd(emojiCount),
+            OtherMessageCount = wd(otherMessageCount),
+            UserMessageCount = wd(userMessageCount),
+            AverageResponseTime = wd(averageResponseTime),
+            PowerWordCount = wd(powerWordCount),
+            PeriodEndCount = wd(periodEndCount),
+            AverageMessagesPerDay = wd(msgsPerDay),
+            PowerPhraseCount = wd(powerPhraseCount),
+            PowerAbbrevCount = wd(powerAbbrevCount),
+            WinkyCount = wd(winkyCount)
         };
 
-        results.Love_percentage = CalculateLovePercent(results);
+        results.Meaning = new LovePercentageMeaning(CalculateLovePercent(results));
 
         Console.WriteLine("Number of messages from other person: " + otherMessageCount + "\nNumber of messages from user: " + userMessageCount);
         Console.WriteLine("Average response time: " + averageResponseTime);

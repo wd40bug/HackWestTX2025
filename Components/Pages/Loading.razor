@@ -11,22 +11,36 @@
     private double size = 700;
     private double num_petals = 20;
     private double petal_inner_rad = 210;
-    private Canvas helper_canvas;
-    private ElementReference normal_canvas;
+    private Canvas? helper_canvas;
     private double rotation = 0.0;
-    private Timer _timer;
-    private Timer _timer2;
-    private Context2D _context;
+    private Timer? _timer;
+    private Timer? _timer2;
+    private Context2D? _context;
 
     private async void HandleTimerElapsed(object? sender, ElapsedEventArgs e)
     {
         rotation += 0.01;
-        await using var batch = _context.CreateBatch();
-        await draw_background(batch);
-        await draw_petals(batch);
-        await draw_sepia(batch);
+        if (_context is null)
+        {
+            return;
+        }
+        try
+        {
+            await using var batch = _context.CreateBatch();
+            await draw_background(batch);
+            await draw_petals(batch);
+            await draw_sepia(batch);
+        }
+        catch (JSDisconnectedException)
+        {
+            //ignore
+        }
+        catch (TaskCanceledException)
+        {
+            //ignore
+        }
 
-        await InvokeAsync(StateHasChanged); // Update the UI
+        @* await InvokeAsync(StateHasChanged); // Update the UI *@
     }
 
     private async void HandleProgressTimerElapsed(object? sender, ElapsedEventArgs e)
@@ -80,16 +94,16 @@
     {
         if (first_render)
         {
-            _context = await helper_canvas.GetContext2DAsync();
+            _context = await helper_canvas!.GetContext2DAsync();
             _timer = new Timer(10); // 1 second interval
             _timer.Elapsed += HandleTimerElapsed;
             _timer.AutoReset = true;
             _timer.Enabled = true;
 
-            _timer = new Timer(1000); // 1 second interval
-            _timer.Elapsed += HandleProgressTimerElapsed;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
+            _timer2 = new Timer(1000); // 1 second interval
+            _timer2.Elapsed += HandleProgressTimerElapsed;
+            _timer2.AutoReset = true;
+            _timer2.Enabled = true;
         }
     }
 }

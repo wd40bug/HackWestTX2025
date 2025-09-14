@@ -17,7 +17,7 @@
     case Page.Results:
         @if (results is not null)
         {
-            <Results results="@results.Value" />
+            <Results results="@results" />
         }
         else
         {
@@ -35,14 +35,8 @@
         Loading,
         Results,
     }
-    Page state = Page.Loading;
-    LoveResults? results = new LoveResults
-    {
-        love_percentage = 100.0,
-        meaning = new LovePercentageMeaning(100.0),
-        average_response = new WeightedResult<double>(100, 1),
-        heart_count = new WeightedResult<double>(1.70, 1.5)
-    };
+    Page state = Page.UploadFile;
+    LoveResults? results;
     private List<Message> parse_json = new List<Message>();
 
     public async void LoveCalculated((IBrowserFile file, string token) args)
@@ -54,12 +48,12 @@
 
         /*foreach (var message in parse_json)
         {
-            Console.Write(message.Time + ": ");
-            Console.WriteLine(message.Content);
+        Console.Write(message.Time + ": ");
+        Console.WriteLine(message.Content);
         }*/
         Console.WriteLine("Number of messages: " + parse_json.Count());
         ChatLog clog = new ChatLog(parse_json);
-        clog.FindStats();
+        results = clog.FindStats();
         state = Page.Results;
         await InvokeAsync(StateHasChanged);
         Console.WriteLine("Finished Calculating Love!!!");

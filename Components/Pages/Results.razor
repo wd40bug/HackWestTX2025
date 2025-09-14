@@ -6,11 +6,11 @@
     <div class="flower-indicator"></div>
     <div class="result-top">
         <div class="love-percentage">
-            <h1 class="titan-one">@results.love_percentage%</h1>
+            <h1 class="titan-one">@Math.Round(results.Love_percentage)%</h1>
         </div>
         <div class="flower-space"></div>
         <div class="flavor-text">
-            <h1 class="titan-one">@results.meaning.message</h1>
+            <h1 class="titan-one">@results.Meaning.message</h1>
         </div>
     </div>
     <div class="result-item-container">
@@ -20,10 +20,10 @@
                 @switch (kind)
                 {
                     case ResultKind.responseTime:
-                        <ResponseTime responseTime="results.average_response.Value" />
+                        <ResponseTime responseTime="results.AverageResponseTime.Value" />
                         break;
                     case ResultKind.heartCount:
-                        <HeartCount heartCount="results.heart_count.Value" />
+                        <HeartCount heartCount="results.HeartCount.Value" />
                         break;
                 }
             </div>
@@ -42,7 +42,7 @@
     }
 
     .result-top {
-        height: 200px;
+        height: 250px;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         margin: 10px;
@@ -70,7 +70,7 @@
         text-align: center;
         display: flex;
         color:
-            @results.meaning.color
+            @results.Meaning.color
         ;
 
     }
@@ -115,7 +115,7 @@
         text-align: center;
         display: flex;
         color:
-            @results.meaning.color
+            @results.Meaning.color
         ;
 
     }
@@ -165,8 +165,8 @@
     private List<ResultKind> order_results()
     {
         var ret = new List<(double, ResultKind)>(1);
-        ret.Add((results.average_response.Weight, ResultKind.responseTime));
-        ret.Add((results.heart_count.Weight, ResultKind.heartCount));
+        ret.Add((results.AverageResponseTime.Weight, ResultKind.responseTime));
+        ret.Add((results.HeartCount.Weight, ResultKind.heartCount));
         return ret.OrderByDescending(i => i.Item1).Select(i => i.Item2).ToList();
     }
 
