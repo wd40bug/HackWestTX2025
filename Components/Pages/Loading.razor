@@ -58,8 +58,7 @@
 
     private async Task draw_background(Batch2D batch)
     {
-        await batch.FillStyleAsync("red");
-        await batch.FillRectAsync(0, 0, size,
+        await batch.ClearRectAsync(0, 0, size,
         size);
     }
 
