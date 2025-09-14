@@ -12,6 +12,7 @@ public struct LoveResults
     public double averageResponseTime;
     public int powerWordCount;
     public int periodEndCount;
+    public double averageMessagesPerDay;
 }
 
 public struct Message
@@ -173,13 +174,51 @@ public class ChatLog(List<Message> messageLog)
         return 0;
     }
 
-    /*private double CalculateLovePercent(LoveResults results)
+  /*  private double CalculateLovePercent(LoveResults results)
     {
+        double lovePercent = 0;
         
         Weights (high to low)
         Average Response time
         Messages per day
+        powerWordCount
+        otherMessageCpunt
+        winkyCount
+        heartCount
+        extraYCount
+        emojiCount
+        periodEndCount
+        userMessageCount
         
+        double averageResponseTime = results.averageResponseTime;
+        double messagesPerDay = results.averageMessagesPerDay;
+
+        if (averageResponseTime < 300)
+        {
+            lovePercent += 20;
+        }
+        else if (averageResponseTime < 600)
+        {
+            lovePercent += 15;
+        }
+        else if (averageResponseTime < 1800)
+        {
+            lovePercent += 10;
+        }
+        else
+        {
+            lovePercent += 18000.0 / averageResponseTime;
+        }
+
+        // + 15% if messages per day > 40
+        if (messagesPerDay > 40.0)
+        {
+            lovePercent += 15;
+        }
+        else
+        {
+            lovePercent += .375 / (1 / messagesPerDay);
+        }
 
     }*/
 
