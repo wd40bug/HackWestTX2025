@@ -1,4 +1,4 @@
-// i love git :)
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 public struct LovePercentageMeaning
@@ -53,19 +53,20 @@ public class WeightedResult<T>(T value, double weight)
 }
 public struct LoveResults
 {
-    public double love_percentage;
-    public LovePercentageMeaning meaning;
-    public WeightedResult<double> average_response;
-    public WeightedResult<double> heart_count;
-    public WeightedResult<int> extraYCount;
-    public WeightedResult<int> heartCount;
-    public WeightedResult<int> emojiCount;
-    public WeightedResult<int> otherMessageCount;
-    public WeightedResult<int> userMessageCount;
-    public WeightedResult<double> averageResponseTime;
-    public WeightedResult<int> powerWordCount;
-    public WeightedResult<int> powerPhraseCount;
-    public WeightedResult<int> powerAbbrevCount;
+    public double Love_percentage;
+    public LovePercentageMeaning Meaning;
+    public WeightedResult<int> ExtraYCount;
+    public WeightedResult<int> HeartCount;
+    public WeightedResult<int> EmojiCount;
+    public WeightedResult<int> OtherMessageCount;
+    public WeightedResult<int> UserMessageCount;
+    public WeightedResult<double> AverageResponseTime;
+    public WeightedResult<int> PowerWordCount;
+    public WeightedResult<int> PeriodEndCount;
+    public WeightedResult<double> AverageMessagesPerDay;
+    public WeightedResult<int> PowerPhraseCount;
+    public WeightedResult<int> PowerAbbrevCount;
+    public WeightedResult<int> WinkyCount;
 }
 
 public struct Message
@@ -230,8 +231,8 @@ public class ChatLog(List<Message> messageLog)
     {
         string lowMessage = message.ToLower();
         int powerWordCount = 0;
-        List<string> powerWordList = new List<String>() {"love", "hot", "sexy", "lol", "beautiful", "sugar", "heart", "dear", "honey", "hun", "hon", "haha",
-        "sweet", "cute", "pretty", "handsome"};
+        List<string> powerWordList = new List<String>() {"love", "ily", "heart", "dear", "honey", "hun", "hon", "haha",
+        "sweet", "cute", "pretty", "handsome", "beautiful", "hot", "sexy"};
 
         foreach (string powerWord in powerWordList)
         {
@@ -240,8 +241,163 @@ public class ChatLog(List<Message> messageLog)
         return powerWordCount;
     }
 
+    // Count up the number of times the other user ended a message with a period
+    private int MessageEndsInPeriodTest(string message)
+    {
+        if (message.EndsWith("."))
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    private double CalculateLovePercent(LoveResults results)
+    {
+        double lovePercent = 0;
+
+
+        // Weights
+        // Average Response time       20       done
+        // Messages per day            21       done
+        // powerWordRatio              16       done
+        // powerPhraseRatio            17       done
+        // heartCount + winkyCount     4        done
+        // extraYCount                 7       done
+        // emojiCount                  10        done
+        // periodEndCount              -10      done
+        // powerPhrase/PowerAbbreviation 5      done
+
+
+        double averageResponseTime = results.AverageResponseTime;
+        double messagesPerDay = results.AverageMessagesPerDay;
+        int powerWordCount = results.PowerWordCount;
+        int otherMessageCount = results.OtherMessageCount;
+        double messagePowerWordRatio = (double)otherMessageCount / (double)powerWordCount;
+        int powerPhraseCount = results.PowerPhraseCount;
+        int powerAbbrevCount = results.PowerAbbrevCount;
+        double phraseAbbrevRatio;
+        if (powerAbbrevCount != 0)
+        {
+            phraseAbbrevRatio = (double)powerPhraseCount / (double)powerAbbrevCount;
+        }
+        else if (powerPhraseCount != 0)
+        {
+            phraseAbbrevRatio = 1;
+        }
+        else
+        {
+            phraseAbbrevRatio = 0;
+        }
+        double messagePhraseRatio = (double)otherMessageCount / (double)powerPhraseCount;
+        double heartWinkCount = results.HeartCount + results.WinkyCount;
+        int extraYCount = results.ExtraYCount;
+        double emojiMessageRatio = (double)results.EmojiCount / (double)otherMessageCount;
+        double periodEndMessageRatio = (double)results.PeriodEndCount / (double)otherMessageCount;
+
+        if (averageResponseTime < 900)
+        {
+            lovePercent += 20;
+        }
+        else if (averageResponseTime < 1600)
+        {
+            lovePercent += 15;
+        }
+        else if (averageResponseTime < 2000)
+        {
+            lovePercent += 10;
+        }
+        else
+        {
+            lovePercent += 20000.0 / averageResponseTime;
+        }
+
+        // + 21% if messages per day > 40
+        if (messagesPerDay > 40.0)
+        {
+            lovePercent += 21;
+        }
+        else
+        {
+            lovePercent += .525 / (1 / messagesPerDay);
+        }
+
+        // + 16% if message/powerWordRatio < 10
+        if (messagePowerWordRatio < 10)
+        {
+            lovePercent += 16;
+        }
+        else
+        {
+            lovePercent += 160.0 / (messagePowerWordRatio);
+        }
+
+        // + 5% if phraseAbbrevRatio > 4.25
+        if (phraseAbbrevRatio > 4.25)
+        {
+            lovePercent += 5;
+        }
+        else
+        {
+            lovePercent += 1.17647 / (1 / phraseAbbrevRatio);
+        }
+
+        // + 17% if messagePhraseRatio < 23
+        if (messagePhraseRatio < 23)
+        {
+            lovePercent += 17;
+        }
+        else
+        {
+            lovePercent += 391.0 / messagePhraseRatio;
+        }
+
+        // + 4% if heart + winky > 15
+        if (heartWinkCount > 15)
+        {
+            lovePercent += 4;
+        }
+        else
+        {
+            lovePercent += .26 * heartWinkCount;
+        }
+
+        // + 7% if > 7 extra ys
+        if (extraYCount > 7)
+        {
+            lovePercent += 7;
+        }
+        else
+        {
+            lovePercent += 1 * extraYCount;
+        }
+
+        // + 10% if emojiMessageRatio > .75
+        if (emojiMessageRatio > .75)
+        {
+            lovePercent += 10;
+        }
+        else
+        {
+            lovePercent += 13.3333 * emojiMessageRatio;
+        }
+
+        // up to -10% for periodEndMessageRatio
+        if (periodEndMessageRatio > .15)
+        {
+            double percentLoss = (periodEndMessageRatio - .15 * 100);
+            if (percentLoss > 10)
+            {
+                percentLoss = 10;
+            }
+            lovePercent -= percentLoss;
+        }
+
+        results.Love_percentage = lovePercent;
+        return lovePercent;
+    }
+
     // Count up all the FindStats
-    public double FindStats()
+    public LoveResults FindStats()
     {
         int extraYCount = 0;
         int heartCount = 0;
@@ -251,6 +407,7 @@ public class ChatLog(List<Message> messageLog)
         int userMessageCount = 0;
         double responseTimeSum = 0;
         int powerWordCount = 0;
+        int periodEndCount = 0;
         // number of responses
         int responseSum = 0;
         bool moreMessages = true;
@@ -309,6 +466,7 @@ public class ChatLog(List<Message> messageLog)
                 winkyCount += FindWinkyCount(currentMessage.Content);
                 emojiCount += FindEmojiCount(currentMessage);
                 powerWordCount += FindPowerWordCount(currentMessage.Content);
+                periodEndCount += MessageEndsInPeriodTest(currentMessage.Content);
                 powerAbbrevCount += FindPowerAbbrevCount(currentMessage.Content);
                 powerPhraseCount += FindPowerPhraseCount(currentMessage.Content);
             }
@@ -324,7 +482,26 @@ public class ChatLog(List<Message> messageLog)
         //ella code
         numDays = (lastDay.Date - firstDay.Date).Days;
         msgsPerDay = (float)otherMessageCount / numDays;
-        //
+
+        LoveResults results = new LoveResults
+        {
+            Love_percentage = 0,
+            ExtraYCount = extraYCount,
+            HeartCount = heartCount,
+            EmojiCount = emojiCount,
+            OtherMessageCount = otherMessageCount,
+            UserMessageCount = userMessageCount,
+            AverageResponseTime = averageResponseTime,
+            PowerWordCount = powerWordCount,
+            PeriodEndCount = periodEndCount,
+            AverageMessagesPerDay = msgsPerDay,
+            PowerPhraseCount = powerPhraseCount,
+            PowerAbbrevCount = powerAbbrevCount,
+            WinkyCount = winkyCount
+        };
+
+        results.Love_percentage = CalculateLovePercent(results);
+
         Console.WriteLine("Number of messages from other person: " + otherMessageCount + "\nNumber of messages from user: " + userMessageCount);
         Console.WriteLine("Average response time: " + averageResponseTime);
         Console.WriteLine("Total number of extra ys: " + extraYCount);
@@ -337,12 +514,8 @@ public class ChatLog(List<Message> messageLog)
         Console.WriteLine("Total number of spelled out phrases: " + powerPhraseCount + " vs abbreviated: " + powerAbbrevCount);
         //
         Console.WriteLine("Total number of power words: " + powerWordCount);
-        return new LoveResults
-        {
-            love_percentage = 0,
-            meaning = new LovePercentageMeaning(0),
-            average_response = new WeightedResult<double>(averageResponseTime, 1.0),
-            heart_count = new WeightedResult<double>(heartCount, 1)
-        };
+        Console.WriteLine("Number of times other person ended a message with a period: " + periodEndCount);
+        Console.WriteLine("Total love percent: " + results.Love_percentage);
+        return results;
     }
 }
