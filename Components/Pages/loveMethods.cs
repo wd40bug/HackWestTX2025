@@ -134,15 +134,15 @@ public class ChatLog(List<Message> messageLog)
         return 0;
     }
 
-    private double CalculateLovePercent(LoveResults results)
+    /*private double CalculateLovePercent(LoveResults results)
     {
-        /*
+        
         Weights (high to low)
         Average Response time
         Messages per day
-        */
+        
 
-    }
+    }*/
 
     // Count up all the FindStats
     public double FindStats()
