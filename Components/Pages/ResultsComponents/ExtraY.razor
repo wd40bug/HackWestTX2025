@@ -3,6 +3,10 @@
     [Parameter]
     [EditorRequired]
     public int ExtraYs { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public double yPerHey {get; set;}
 }
 
 <div class="extra-y-container">
@@ -21,6 +25,6 @@
 @code {
     private string hey()
     {
-        return "He" + new string('y', Math.Max(1, ExtraYs));
+        return "He" + new string('y', Math.Max(1, (int)yPerHey));
     }
 }

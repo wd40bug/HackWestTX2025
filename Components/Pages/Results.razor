@@ -28,7 +28,7 @@
                         <HeartCount heartCount="results.HeartCount.Value" />
                         break;
                     case ResultKind.extraY:
-                        <ExtraY ExtraYs="@results.ExtraYCount.Value" />
+                        <ExtraY ExtraYs="@results.ExtraYCount.Value" yPerHey="@results.YPerHey"/>
                         break;
                     case ResultKind.periodEnd:
                         <PeriodEndCount PeriodEnd="@results.PeriodEndCount.Value" />
@@ -281,7 +281,8 @@
         averageMessageCount,
         powerWords,
         powerPhrase,
-        powerAbbrev
+        powerAbbrev,
+        yPerHey
     }
 
     [Parameter]

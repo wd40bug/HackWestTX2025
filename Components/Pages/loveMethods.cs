@@ -72,6 +72,7 @@ public class LoveResults
     required public WeightedResult<int> PowerAbbrevCount;
     required public WeightedResult<int> WinkyCount;
     required public string mostSentEmoji;
+    required public double YPerHey;
 }
 
 public struct Message
@@ -431,6 +432,7 @@ public class ChatLog(List<Message> messageLog)
         double responseTimeSum = 0;
         int powerWordCount = 0;
         int periodEndCount = 0;
+        int heyCount = 0;
         // number of responses
         int responseSum = 0;
         bool moreMessages = true;
@@ -486,6 +488,7 @@ public class ChatLog(List<Message> messageLog)
             if (!currentMessage.Self)
             {
                 otherMessageCount++;
+                if (currentMessage.Content.ToLower().Contains("hey")) heyCount++;
                 extraYCount += FindYCount(currentMessage.Content);
                 heartCount += FindHeartCount(currentMessage.Content);
                 winkyCount += FindWinkyCount(currentMessage.Content);
@@ -531,7 +534,8 @@ public class ChatLog(List<Message> messageLog)
             PowerPhraseCount = wd(powerPhraseCount),
             PowerAbbrevCount = wd(powerAbbrevCount),
             WinkyCount = wd(winkyCount),
-            mostSentEmoji = mostSent
+            mostSentEmoji = mostSent,
+            YPerHey = extraYCount / heyCount
         };
 
         results.Meaning = new LovePercentageMeaning(CalculateLovePercent(results));
@@ -550,6 +554,7 @@ public class ChatLog(List<Message> messageLog)
         //
         Console.WriteLine("Total number of power words: " + powerWordCount);
         Console.WriteLine("Number of times other person ended a message with a period: " + periodEndCount);
+        Console.WriteLine("Average number of Ys per hey: " + Math.Round((double)extraYCount / heyCount), 2);
         Console.WriteLine("Total love percent: " + results.Love_percentage);
         return results;
     }
