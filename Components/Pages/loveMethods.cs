@@ -149,15 +149,19 @@ public class ChatLog(List<Message> messageLog)
 
     public int FindWinkyCount(string message)
     {
-        string escapedMsg = Regex.Escape(message);
-        string escapedSmiley = Regex.Escape(";)");
-        MatchCollection matches = Regex.Matches(escapedMsg, escapedSmiley);
-        int winkyCount = matches.Count;
+        int winkyCount = 0;
+        string escapedMsg = message.ToUpper();
+        List<string> escapedSmiles = [Regex.Escape(";)"), Regex.Escape(":)"), Regex.Escape(":3"), Regex.Escape(":D"), Regex.Escape("XD")];
+        foreach (var smile in escapedSmiles)
+        {
+            MatchCollection matches = Regex.Matches(escapedMsg, smile);
+            winkyCount += matches.Count;
+        }
         return winkyCount;
     }
     //
 
-    Dictionary<string, int> emojiCounter = new Dictionary<string, int>();
+    Dictionary<string, int> emojiCounter = [];
 
     private int FindEmojiCount(Message message)
     {
