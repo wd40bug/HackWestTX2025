@@ -64,9 +64,14 @@
             </h1>
         </div>
     </div>
-    <div class="reciprocal-button-container">
+    <div class="button-container">
         <button class="reciprocal-button" @onclick="HandleReciprocalClick">Reciprocal Analysis</button>
+        <button class="home-button" @onclick="HandleHomeClick">Home</button>
     </div>
+    <!--
+    <div class = "home-button-container">
+        <button class="home-button" @onclick="HandleHomeClick">Home</button>
+    </div>-->
 </div>
 
 
@@ -109,7 +114,34 @@
         align-items: center;
     }
 
+    .button-container {
+        margin: 10px;
+        padding: 20px;
+        gap: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .reciprocal-button {
+        height: 70px;
+        width: 400px;
+        border-radius: 10px;
+        border: 0;
+        background-color: @BlazorTest.ColorConstants.light_pink;
+        font-size: 30px;
+    }
+
+    .home-button-container {
+        margin: 10px;
+        padding: 20px;
+        gap: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .home-button {
         height: 70px;
         width: 400px;
         border-radius: 10px;
@@ -292,6 +324,11 @@
     [Parameter]
     [EditorRequired]
     public EventCallback Reciprocal{get;set;}
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback Home{get;set;}
+
     @* 
     [Parameter]
     [EditorRequired]
@@ -317,5 +354,7 @@
         Reciprocal.InvokeAsync();
     }
 
-
+    private void HandleHomeClick(){
+        Home.InvokeAsync();
+    }
 }

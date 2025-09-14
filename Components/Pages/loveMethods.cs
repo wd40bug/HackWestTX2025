@@ -519,6 +519,9 @@ public class ChatLog(List<Message> messageLog)
             return new WeightedResult<T>(val, 0);
         }
 
+        // avoid divide by zero error
+        if (heyCount == 0) heyCount = 1;
+
         LoveResults results = new LoveResults
         {
             Love_percentage = 0,

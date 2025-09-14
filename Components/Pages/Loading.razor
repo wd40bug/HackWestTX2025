@@ -108,9 +108,15 @@
             _timer.AutoReset = true;
             _timer.Enabled = true;
 
-            if (helper_canvas is not null)
+            /*if (helper_canvas is not null)
             {
                 _context = await helper_canvas.GetContext2DAsync();
+            }*/
+            try{
+                _context = await helper_canvas.GetContext2DAsync();
+            }
+            catch(JSException){
+                //do nothing
             }
 
         }
