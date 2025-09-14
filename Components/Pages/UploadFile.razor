@@ -19,6 +19,42 @@
 
 
 </div>
+<div class="upload-tutorial-spacer" />
+<div class="upload-tutorial">
+    <h1><b>Tutorial</b></h1>
+    <br />
+    <h2>Download DiscordChatExporter</h2>
+    <p>From <a
+            href="https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.46">https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.46</a>
+        download
+        DiscordChatExporter.Cli.&ltplatform&gt-&ltarch&gt.zip (fill in your platform and architecture). Extract the file
+        to a folder.</p>
+    <h2>Get discord token</h2>
+    <p>Follow instructions at <a
+            href="https://github.com/Tyrrrz/DiscordChatExporter/blob/master/.docs/Token-and-IDs.md">https://github.com/Tyrrrz/DiscordChatExporter/blob/master/.docs/Token-and-IDs.md</a>
+        to determine your discord token</p>
+    <h2>List Chats</h2>
+    <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter dm` (fill in your token) to list your dms. Copy
+        the snowflake of the
+        one you want to export</p>
+    <h2>Export</h2>
+    <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter export &ltSNOWFLAKE&gt -o &ltOUTPUT_FILE&gt -f
+        json` (fill in your token, snowflake, and output file)</p>
+</div>
+
+<style>
+    .upload-tutorial-spacer {
+        height: 100px;
+    }
+
+    .upload-tutorial {
+        background-color:
+            @BlazorTest.ColorConstants.light_purple
+        ;
+        border-radius: 10px;
+        padding: 10px;
+    }
+</style>
 
 
 
