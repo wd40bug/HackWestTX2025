@@ -25,6 +25,12 @@
                     case ResultKind.heartCount:
                         <HeartCount heartCount="results.HeartCount.Value" />
                         break;
+                    case ResultKind.averageMessageCount:
+                        <AverageMessagesPerDay averageMessagesPerDay="results.AverageMessagesPerDay.Value" />
+                        break;
+                    case ResultKind.powerWords:
+                        <PowerWords powerWordCount="results.PowerWordCount.Value"/>
+                        break;
                 }
             </div>
         }
@@ -152,6 +158,9 @@
     {
         responseTime,
         heartCount,
+        averageMessageCount,
+        powerWords,
+        powerPhrase
     }
 
     [Parameter]
@@ -167,6 +176,9 @@
         var ret = new List<(double, ResultKind)>(1);
         ret.Add((results.AverageResponseTime.Weight, ResultKind.responseTime));
         ret.Add((results.HeartCount.Weight, ResultKind.heartCount));
+        ret.Add((results.AverageMessagesPerDay.Weight, ResultKind.averageMessageCount));
+        ret.Add((results.PowerWordCount.Weight, ResultKind.powerWords));
+        ret.Add((results.PowerPhraseCount.Weight, ResultKind.powerPhrase));
         return ret.OrderByDescending(i => i.Item1).Select(i => i.Item2).ToList();
     }
 

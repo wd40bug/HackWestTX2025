@@ -1,0 +1,18 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public double powerWordCount { get; set; }
+}
+
+<div class="power-word-container">
+    <h2 class="text">They said @powerWordCount power words (words like love, pretty, cute, etc.)</h2>
+</div>
+
+<style>
+    .power-word-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+    }
+</style>

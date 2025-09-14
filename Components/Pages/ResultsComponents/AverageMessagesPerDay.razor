@@ -1,0 +1,25 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public double averageMessagesPerDay { get; set; }
+}
+
+<div class="average-message-container">
+    <h1 class="average-message-text">&lt3</h1>
+    <h2 class="text">There were, on average, @Math.Round(averageMessagesPerDay, 2) messages per day</h2>
+</div>
+
+<style>
+    .average-message-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+        height: 100%;
+    }
+
+    .average-messag-text {
+        font-size: 50pt;
+        font-family: 'Arial', bold;
+    }
+</style>
