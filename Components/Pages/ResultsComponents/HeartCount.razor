@@ -1,0 +1,25 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public double heartCount { get; set; }
+}
+
+<div class="heart-count-container">
+    <h1 class="heart-count-text">&lt3</h1>
+    <h2 class="text">There were, on average, @heartCount &lt3s per message</h2>
+</div>
+
+<style>
+    .heart-count-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+        height: 100%;
+    }
+
+    .heart-count-text {
+        font-size: 50pt;
+        font-family: 'Arial', bold;
+    }
+</style>

@@ -1,8 +1,61 @@
 using System.Text.RegularExpressions;
 
+public struct LovePercentageMeaning
+{
+    public string message;
+    public string color;
+    public LovePercentageMeaning(double percentage)
+    {
+        if (percentage >= 95)
+        {
+            color = "#f702ef"; message = "Marry Me!"; return;
+        }
+        else if (percentage >= 90)
+        {
+            color = "#02f738"; message = "Are you free this friday?"; return;
+        }
+        else if (percentage >= 80)
+        {
+            color = "#94e32d"; message = "Maybe this could be something"; return;
+        }
+        else if (percentage >= 70)
+        {
+            color = "#bae643"; message = "I think of you as a really good friend"; return;
+        }
+        else if (percentage >= 60)
+        {
+            color = "#d2e643"; message = "I don't think romance is in the cards"; return;
+        }
+        else if (percentage >= 50)
+        {
+            color = "#e6ca43"; message = "You're a pleasant aquaintance"; return;
+        }
+        else if (percentage >= 30)
+        {
+            color = "#e6a743"; message = "Why do we even talk?"; return;
+        }
+        else if (percentage >= 10)
+        {
+            color = "#e67643"; message = "Who is this?"; return;
+        }
+        else
+        {
+            color = "red"; message = "I HATE YOU!"; return;
+        }
+    }
+}
+
+public class WeightedResult<T>(T value, double weight)
+{
+    public T Value = value;
+    public double Weight = weight;
+}
 public struct LoveResults
 {
     public double love_percentage;
+    public LovePercentageMeaning meaning;
+    public WeightedResult<double> average_response;
+    public WeightedResult<double> heart_count;
 }
 public struct Message
 {
@@ -97,7 +150,7 @@ public class ChatLog(List<Message> messageLog)
     }
 
     // Count up all the statistics
-    public double FindAverageResponseTime()
+    public LoveResults FindAverageResponseTime()
     {
         int extraYCount = 0;
         int heartCount = 0;
@@ -111,7 +164,7 @@ public class ChatLog(List<Message> messageLog)
         int messageIndex = 0;
         int userStartIndex = 0;
 
-        List<double> responseTimeList = new List<double>();
+        var responseTimeList = new List<double>();
 
         while (moreMessages && messageIndex < MessageLog.Count)
         {
@@ -166,6 +219,12 @@ public class ChatLog(List<Message> messageLog)
         Console.WriteLine("Total number of extra ys: " + extraYCount);
         Console.WriteLine("Total number of <3s: " + heartCount);
         Console.WriteLine("Total number of emojis: " + emojiCount);
-        return averageResponseTime;
+        return new LoveResults
+        {
+            love_percentage = 0,
+            meaning = new LovePercentageMeaning(0),
+            average_response = new WeightedResult<double>(averageResponseTime, 1.0),
+            heart_count = new WeightedResult<double>(heartCount, 1)
+        };
     }
 }

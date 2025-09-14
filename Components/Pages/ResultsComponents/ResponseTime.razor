@@ -1,0 +1,23 @@
+@rendermode InteractiveServer
+@code {
+    [Parameter]
+    [EditorRequired]
+    public double responseTime { get; set; }
+}
+
+<div class="res-time-container">
+    <img class="clock-img" src="../clock.webp" />
+    <h2 class="text">They took on average of @responseTime s to respond to you</h2>
+</div>
+
+<style>
+    .res-time-container {
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        align-items: center;
+    }
+
+    .clock-img {
+        height: 100px;
+    }
+</style>
