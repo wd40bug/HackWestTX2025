@@ -48,6 +48,10 @@ else
         <h2>Export</h2>
         <p>Execute command `DISCORD_TOKEN=&ltTOKEN&gt ./DiscordChatExporter export &ltSNOWFLAKE&gt -o &ltOUTPUT_FILE&gt -f
             json` (fill in your token, snowflake, and output file)</p>
+        <h2>User ID</h2>
+        <p>Enable developer mode by following these instruction <a
+                href="https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5CRSRTWYCGPHZQ37H">https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5CRSRTWYCGPHZQ37H</a>
+        </p>
     </div>
 }
 
@@ -93,8 +97,8 @@ else
     public EventCallback<(IBrowserFile, string)> OnLove { get; set; }
     private bool button_disabled = true;
 
-    private string? discord_token = "470664396075434004";
-    private Int64? _token_get = 470664396075434004;
+    private string? discord_token;
+    private Int64? _token_get;
     private Int64? token
     {
         get
