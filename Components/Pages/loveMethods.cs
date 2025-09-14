@@ -507,7 +507,7 @@ public class ChatLog(List<Message> messageLog)
         //ella code
         numDays = (lastDay.Date - firstDay.Date).Days;
         msgsPerDay = (double)otherMessageCount / numDays;
-        var mostSent = emojiCounter.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+        string mostSent = emojiCounter.Count() == 0 ? "" : emojiCounter.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 
 
 
