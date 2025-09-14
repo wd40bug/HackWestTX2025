@@ -33,6 +33,8 @@ public struct Message
 public class ChatLog(List<Message> messageLog)
 {
     private List<Message> MessageLog { get; set; } = messageLog;
+    DateTime firstDay = DateTime.MaxValue;
+    DateTime lastDay = DateTime.MinValue;
 
     private DateTime GetDateTime(int messageIndex)
     {
@@ -81,6 +83,20 @@ public class ChatLog(List<Message> messageLog)
         return heartCount;
     }
 
+    // return number of instances of ";)" in a message
+    //ella code
+
+    public int FindWinkyCount(string message)
+    {
+        string escapedMsg = Regex.Escape(message);
+        string escapedSmiley = Regex.Escape(";)");
+        MatchCollection matches = Regex.Matches(escapedMsg, escapedSmiley);
+        int winkyCount = matches.Count;
+        return winkyCount;
+    }
+    //
+
+   
     private int FindEmojiCount(Message message)
     {
         int emojiCount = 0;
@@ -90,6 +106,8 @@ public class ChatLog(List<Message> messageLog)
         }
         return emojiCount;
     }
+
+    
 
     // Returns the amount of time it took for the other person to respond. Takes index of initial message as parameter
     private TimeSpan TimeBetweenResponse(int messageIndex)
@@ -110,6 +128,27 @@ public class ChatLog(List<Message> messageLog)
         responseTime = MessageLog[responseIndex].Time.Subtract(MessageLog[messageIndex].Time);
         return responseTime;
     }
+
+    //find first and last day of messages by checking if the message is earlier/later than earliest/latest date
+    //ella code
+    public void CountDays(int messageIndex)
+    {
+        DateTime dateTime = MessageLog[messageIndex].Time;
+        if (dateTime.CompareTo(firstDay) < 0)
+        {
+            //Console.WriteLine("old earliest date " + firstDay);
+            firstDay = dateTime;
+            Console.WriteLine("new earliest date " + firstDay);
+        }
+        if (dateTime.CompareTo(lastDay) > 0)
+        {
+            //Console.WriteLine("old latest date " + lastDay);
+            lastDay = dateTime;
+            Console.WriteLine("new latest date " + lastDay);
+        }
+    }
+    //
+
 
     private int FindPowerWordCount(string message)
     {
@@ -149,6 +188,7 @@ public class ChatLog(List<Message> messageLog)
     {
         int extraYCount = 0;
         int heartCount = 0;
+        int winkyCount = 0;
         int emojiCount = 0;
         int otherMessageCount = 0;
         int userMessageCount = 0;
@@ -166,6 +206,10 @@ public class ChatLog(List<Message> messageLog)
         while (moreMessages && messageIndex < MessageLog.Count)
         {
             Message currentMessage = MessageLog[messageIndex];
+            //ella code
+            //check date and update
+            CountDays(messageIndex);
+            //
             // Test if first message is from user
             if (messageIndex == 0 && currentMessage.Self)
             {
@@ -199,6 +243,7 @@ public class ChatLog(List<Message> messageLog)
                 otherMessageCount++;
                 extraYCount += FindYCount(currentMessage.Content);
                 heartCount += FindHeartCount(currentMessage.Content);
+                winkyCount += FindWinkyCount(currentMessage.Content);
                 emojiCount += FindEmojiCount(currentMessage);
                 powerWordCount += FindPowerWordCount(currentMessage.Content);
                 periodEndCount += MessageEndsInPeriodTest(currentMessage.Content);
@@ -210,12 +255,20 @@ public class ChatLog(List<Message> messageLog)
 
             messageIndex++;
         }
+
         double averageResponseTime = responseTimeSum / responseSum;
         Console.WriteLine("Number of messages from other person: " + otherMessageCount + "\nNumber of messages from user: " + userMessageCount);
         Console.WriteLine("Average response time: " + averageResponseTime);
         Console.WriteLine("Total number of extra ys: " + extraYCount);
         Console.WriteLine("Total number of <3s: " + heartCount);
         Console.WriteLine("Total number of emojis: " + emojiCount);
+        //ella code
+        int numDays = (lastDay.Date - firstDay.Date).Days;
+        float msgsPerDay = (float)otherMessageCount / numDays;
+        Console.WriteLine("numDays: " + numDays);
+        Console.WriteLine("Messages per day from other person: " + msgsPerDay);
+        Console.WriteLine("Total number of ;)s: " + winkyCount);
+        //
         Console.WriteLine("Total number of power words: " + powerWordCount);
         Console.WriteLine("Number of times other person ended a message with a period: " + periodEndCount);
         return averageResponseTime;
