@@ -11,7 +11,10 @@ public struct LoveResults
     public int userMessageCount;
     public double averageResponseTime;
     public int powerWordCount;
+    public int powerPhraseCount;
+    public int powerAbbrevCount;
 }
+
 public struct Message
 {
     public DateTime Time;
