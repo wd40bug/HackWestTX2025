@@ -37,11 +37,11 @@
         await InvokeAsync(StateHasChanged);
         parse_json = await FileHandle.ParseJson(args.file, args.token);
 
-        foreach (var message in parse_json)
+        /*foreach (var message in parse_json)
         {
             Console.Write(message.Time + ": ");
             Console.WriteLine(message.Content);
-        }
+        }*/
         Console.WriteLine("Number of messages: " + parse_json.Count());
         ChatLog clog = new ChatLog(parse_json);
         clog.FindStats();
