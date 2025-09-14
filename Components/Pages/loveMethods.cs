@@ -1,16 +1,29 @@
 using System.Text.RegularExpressions;
 
+public struct LoveResults
+{
+    public double love_percentage;
+    public int extraYCount;
+    public int heartCount;
+    public int emojiCount;
+    public int otherMessageCount;
+    public int userMessageCount;
+    public double averageResponseTime;
+    public int powerWordCount;
+}
 public struct Message
 {
     public DateTime Time;
     public string Content;
     public bool Self;
+    public List<string> Emojis;
 
-    public Message(DateTime time, string content, bool self)
+    public Message(DateTime time, string content, bool self, List<string> emojis)
     {
         Time = time;
         Content = content;
         Self = self;
+        Emojis = emojis;
     }
 }
 
@@ -20,23 +33,23 @@ public class ChatLog(List<Message> messageLog)
     DateTime firstDay = DateTime.MaxValue;
     DateTime lastDay = DateTime.MinValue;
 
-    public DateTime GetDateTime(int messageIndex)
+    private DateTime GetDateTime(int messageIndex)
     {
         return MessageLog[messageIndex].Time;
     }
 
-    public bool GetSelf(int messageIndex)
+    private bool GetSelf(int messageIndex)
     {
         return MessageLog[messageIndex].Self;
     }
 
-    public string GetContent(int messageIndex)
+    private string GetContent(int messageIndex)
     {
         return MessageLog[messageIndex].Content;
     }
 
     // Sees if a message contains "hey" and returns the number of extra ys (not including the initial one)
-    public int FindYCount(string message)
+    private int FindYCount(string message)
     {
         int yCount = 0;
         message = message.ToLower();
@@ -60,7 +73,7 @@ public class ChatLog(List<Message> messageLog)
     }
 
     // return number of instances of "<3" in a message
-    public int FindHeartCount(string message)
+    private int FindHeartCount(string message)
     {
         MatchCollection matches = Regex.Matches(message, "<3");
         int heartCount = matches.Count;
@@ -69,6 +82,7 @@ public class ChatLog(List<Message> messageLog)
 
     // return number of instances of ";)" in a message
     //ella code
+
     public int FindWinkyCount(string message)
     {
         string escapedMsg = Regex.Escape(message);
@@ -79,15 +93,21 @@ public class ChatLog(List<Message> messageLog)
     }
     //
 
-    public int FindEmojiCount(string message)
+   
+    private int FindEmojiCount(Message message)
     {
-        string emojiPattern = "(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])";
-        int emojiCount = Regex.Count(message, emojiPattern);
+        int emojiCount = 0;
+        foreach (var emoji in message.Emojis)
+        {
+            emojiCount++;
+        }
         return emojiCount;
     }
 
+    
+
     // Returns the amount of time it took for the other person to respond. Takes index of initial message as parameter
-    public TimeSpan TimeBetweenResponse(int messageIndex)
+    private TimeSpan TimeBetweenResponse(int messageIndex)
     {
         int responseIndex = messageIndex;
         TimeSpan responseTime;
@@ -127,10 +147,22 @@ public class ChatLog(List<Message> messageLog)
     //
 
 
-    // Count up all the statistics
-    public double FindAverageResponseTime()
+    private int FindPowerWordCount(string message)
     {
+        int powerWordCount = 0;
+        List<string> powerWordList = new List<String>() {"love", "ily", "heart", "dear", "honey", "hun", "hon", "haha",
+        "sweet", "cute", "pretty", "handsome"};
 
+        foreach (string powerWord in powerWordList)
+        {
+            powerWordCount += Regex.Matches(message, powerWord).Count;
+        }
+        return powerWordCount;
+    }
+
+    // Count up all the FindStats
+    public double FindStats()
+    {
         int extraYCount = 0;
         int heartCount = 0;
         int winkyCount = 0;
@@ -138,6 +170,7 @@ public class ChatLog(List<Message> messageLog)
         int otherMessageCount = 0;
         int userMessageCount = 0;
         double responseTimeSum = 0;
+        int powerWordCount = 0;
         // number of responses
         int responseSum = 0;
         bool moreMessages = true;
@@ -187,14 +220,13 @@ public class ChatLog(List<Message> messageLog)
                 extraYCount += FindYCount(currentMessage.Content);
                 heartCount += FindHeartCount(currentMessage.Content);
                 winkyCount += FindWinkyCount(currentMessage.Content);
-                emojiCount += FindEmojiCount(currentMessage.Content);
+                emojiCount += FindEmojiCount(currentMessage);
+                powerWordCount += FindPowerWordCount(currentMessage.Content);
             }
             if (currentMessage.Self)
             {
                 userMessageCount++;
             }
-
-
 
             messageIndex++;
         }
@@ -212,6 +244,7 @@ public class ChatLog(List<Message> messageLog)
         Console.WriteLine("Messages per day from other person: " + msgsPerDay);
         Console.WriteLine("Total number of ;)s: " + winkyCount);
         //
+        Console.WriteLine("Total number of power words: " + powerWordCount);
         return averageResponseTime;
     }
 }

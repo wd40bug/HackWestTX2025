@@ -15,7 +15,7 @@ namespace BlazorTest.Components.Pages
 
         public static async Task<List<Message>> ParseJson(IBrowserFile file, string token)
         {
-            using var stream = file.OpenReadStream();
+            using var stream = file.OpenReadStream(maxAllowedSize: long.MaxValue);
             using var reader = new StreamReader(stream);
 
             var jsonString = await reader.ReadToEndAsync();
@@ -35,6 +35,7 @@ namespace BlazorTest.Components.Pages
                     Time = message.timestamp,
                     Self = message.author.id == token,
                     Content = message.content,
+                    Emojis = [.. message.inlineEmojis.Select(i => i.name)]
                 };
                 msgs.Add(msg);
             }
@@ -49,14 +50,20 @@ namespace BlazorTest.Components.Pages
     }
     public class RawMessage
     {
-        public string id { get; set; }
-        public Author author { get; set; }
-        public string content { get; set; }
-        public DateTime timestamp { get; set; }
+        required public string id { get; set; }
+        required public Author author { get; set; }
+        required public string content { get; set; }
+        required public DateTime timestamp { get; set; }
+        required public List<InlineEmojis> inlineEmojis { get; set; }
+    }
+
+    public class InlineEmojis
+    {
+        required public string name { get; set; }
     }
 
     public class Author
     {
-        public string id { get; set; }
+        required public string id { get; set; }
     }
 }
