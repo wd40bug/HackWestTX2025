@@ -34,6 +34,9 @@
                     case ResultKind.powerPhrase:
                         <PowerPhrases powerPhraseCount="results.PowerPhraseCount.Value"/>
                         break;
+                    case ResultKind.powerAbbrev:
+                        <PowerAbbrev powerAbbrevCount="results.PowerAbbrevCount.Value"/>
+                        break;
                 }
             </div>
         }
@@ -163,7 +166,8 @@
         heartCount,
         averageMessageCount,
         powerWords,
-        powerPhrase
+        powerPhrase,
+        powerAbbrev
     }
 
     [Parameter]
@@ -182,6 +186,7 @@
         ret.Add((results.AverageMessagesPerDay.Weight, ResultKind.averageMessageCount));
         ret.Add((results.PowerWordCount.Weight, ResultKind.powerWords));
         ret.Add((results.PowerPhraseCount.Weight, ResultKind.powerPhrase));
+        ret.Add((results.PowerAbbrevCount.Weight, ResultKind.powerAbbrev));
         return ret.OrderByDescending(i => i.Item1).Select(i => i.Item2).ToList();
     }
 
